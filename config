@@ -1,0 +1,30 @@
+WIKI_USERNAME="adawson"
+WIKI_PASSWORD="mathrocks"
+
+suff="HF"
+
+location="HF"
+plot="Lyford"
+
+productVersion=0.1
+dvers = 'v4.0'
+mvers = 'v4.0'
+
+lyfordVersion="lyford_data_13mfinalfeb2015.zip"
+audreyCensusVersion="paleon_lyfordbiomassdatajuly2014.zip"
+
+outputDir="/home/adawson/Documents/projects/npp-reformat/output"
+dataDir="/home/adawson/Documents/projects/npp-reformat/data"
+tmpDir="/home/adawson/Documents/projects/npp-reformat/tmp"
+
+projectDir="/home/adawson/Documents/projects/npp-reformat"
+
+censusFile="lyford_census_v2.csv"
+ringMetaFile="lyford_20m_increment_meta.csv"
+treeMetaFile="LyfordAllPlots.csv"
+censusSampleDatesFile="lyford_sample_dates.csv"
+
+rwPlotSampleDatesFile="rwPlotSampleDates.csv"
+
+censusYears="1962,1969,1975,1991,2001,2011"
+plotRadius=20

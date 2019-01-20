@@ -1,0 +1,300 @@
+"Goose Egg Plots 1, 2, and 3",,,"Goose Egg State Forest, Cambridge, NY",,"Plot centers: 43.06769 N, 73.28870 W (GE1); 43.07200 N, 73.28997 W (GE2); 43.07249 N, 73.28543 W (GE3)",,,,,
+Sampling Dates: 04/11/2014 (GE1); 04/12/2014 (GE2);  05/25/2014 (GE3),,,,,,,,,,
+,,,,,,,,,,
+Site,Tree.Number,Species,Canopy,Status,DBH,Distance,Azimuth,Decay,Initials,Cores
+GE1,1,QUAL,intermediate,Li,43,8,1,NA,JMF,"N, S"
+GE1,2,PIST,dominant,Li,35.3,9,359,NA,DB,N-S
+GE1,3,PIST,dominant,Li,58.4,10.8,20,NA,AD,"N, S"
+GE1,4,AMAR,suppressed,Li,10.7,6,44,NA,JMF,E-W
+GE1,5,ACRU,suppressed,Li,13.8,7.1,60,NA,NP,N-S
+GE1,6,PIST,dominant,Li,23.9,10.9,1,NA,DB,N-S
+GE1,7,PIST,dominant,Li,67.7,13.2,42,NA,JMF,"E, W"
+GE1,8,QUMO,intermediate,Li,33.4,20.2,44,NA,NP,E-W
+GE1,9,ACRU,intermediate,Li,22,14.3,44,NA,JMF,"E, W"
+GE1,10,ACRU,codominant,Li,35,15.7,13,NA,DB,"N, S"
+GE1,11,QURU,dominant,Li,51.1,26,28,NA,JMF,"N, S"
+GE1,12,QURU,codominant,Li,40.5,21.9,10,NA,AD,"N, S"
+GE1,13,PIST,dominant,Li,56,27.5,6,NA,DB,"N, S"
+GE1,14,QURU,intermediate,Li,40.9,30,44,NA,JMF,"E, W"
+GE1,15,PIST,dominant,Li,50.4,29.7,64,NA,NP,"E, W"
+GE1,16,PIST,codominant,Li,45,26.3,63,NA,JMF,"E, W"
+GE1,17,PIST,codominant,Li,48.8,26.4,73,NA,NP,"E, W"
+GE1,18,QURU,NA,Sn,NA,21.9,86,3.5,NA,NA
+GE1,19,QURU,codominant,Li,41.6,25.2,20,NA,DB,"E, W"
+GE1,20,QURU,codominant,Li,42.9,27.5,20,NA,AD,"E, W"
+GE1,21,QUAL,codominant,Li,45.5,6.5,76,NA,JMF,"N, S"
+GE1,22,QURU,intermediate,Li,27.9,4.1,109,NA,AD,"N, S"
+GE1,23,QURU,codominant,Li,46.1,8.8,102,NA,NP,"E, W"
+GE1,24,PIST,intermediate,Li,19.8,9.3,136,NA,DB,N-S
+GE1,25,PIST,suppressed,Li,20,6.6,110,NA,DB,E-W
+GE1,26,OSVI,suppressed,Li,12.6,9.7,89,NA,JMF,E-W
+GE1,27,QUAL,intermediate,Sn,39.1,10.8,97,3,NP,N-S
+GE1,28,PIST,intermediate,Li,15.6,6.4,138,NA,DB,E-W
+GE1,29,PIST,dominant,Li,58.5,7.5,125,NA,AD,"E, W"
+GE1,30,QURU,intermediate,Li,30.4,14.7,115,NA,DB,N-S
+GE1,31,PIST,dominant,Li,44.5,12.8,97,NA,JMF,"E, W"
+GE1,32,QURU,codominant,Li,29.7,18.8,105,NA,NP,E-W
+GE1,33,QUAL,codominant,Li,39.4,21.5,115,NA,DB,"E, W"
+GE1,34,QUMO,codominant,Li,42.5,10.7,169,NA,JMF,"E, W"
+GE1,35,PIST,codominant,Li,44.1,16,134,NA,AD,"N, S"
+GE1,36,QURU,codominant,Li,47.4,26.4,93,NA,NP,"N, S"
+GE1,37,PIST,codominant,Li,40.1,15.8,149,NA,AD,"N, S"
+GE1,38,ACRU,intermediate,Li,51.8,15.8,164,NA,JMF,"E, W"
+GE1,39,QURU,codominant,Li,40.3,28.6,130,NA,NP,"N, S"
+GE1,40,QURU,codominant,Li,40.4,25.1,148,NA,DB,"N, S"
+GE1,41,QU-,NA,Lo,27,21.6,140,3,NA,NA
+GE1,42,QURU,codominant,Li,50.3,28.5,160,NA,AD,"N, S"
+GE1,43,QU-,NA,Lo,21.5,10.3,158,NA,NA,NA
+GE1,44,QURU,codominant,Li,47.3,6.8,191,NA,JMF,"E, W"
+GE1,45,PIST,suppressed,Li,24.2,11.4,191,NA,DB,N-S
+GE1,46,FAGR,suppressed,Li,10.2,3.3,233,NA,NP,E-W
+GE1,47,ACRU,suppressed,Li,15.3,9.3,237,NA,NA,NA
+GE1,48,PIST,codominant,Li,21,12,207,NA,DB,N-S
+GE1,49,ACRU,codominant,Li,27,11.7,255,NA,NP,"N, S"
+GE1,50,PIST,codominant,Li,40,11.9,219,NA,AD,"N, S"
+GE1,51,ACRU,suppressed,Li,15.2,7.4,185,NA,JMF,N-S
+GE1,52,QU-,NA,Lo,25.5,8.5,230,NA,NA,NA
+GE1,53,PIST,suppressed,Li,22.5,12.2,207,NA,DB,N-S
+GE1,54,PIST,codominant,Li,33.8,12.5,243,NA,NP,"N, S"
+GE1,55,PIST,suppressed,Lo,11,5.3,185,NA,JMF,N-S
+GE1,56,PIST,codominant,Li,27.2,19.2,209,NA,JMF,"N, S"
+GE1,57,QURU,codominant,Li,47.9,18.2,197,NA,AD,"N, S"
+GE1,58,QURU,codominant,Li,21.7,21.5,238,NA,NP,"N, S"
+GE1,59,PIST,dominant,Li,40.3,22.3,222,NA,DB,"N, S"
+GE1,60,PIST,dominant,Li,48,26.4,215,NA,JMF,"N, S"
+GE1,61,QUMO,codominant,Li,46.1,30,215,NA,DB,"N, S"
+GE1,62,QUAL,codominant,Sn,46.3,28.8,240,NA,AD,S
+GE1,63,PIST,codominant,Li,44,22.8,191,NA,JMF,"E, W"
+GE1,64,PIST,codominant,Li,41.6,24.4,198,NA,DB,"N, S"
+GE1,65,PIST,dominant,Li,62,29.6,241,NA,NP,"E, W"
+GE1,66,QU-,NA,Lo,45.2,24.4,192,NA,NA,NA
+GE1,67,QU-,NA,Lo,39.1,27.1,223,NA,NA,NA
+GE1,68,PIST,NA,Lo,28.9,22.1,221,NA,NA,NA
+GE1,70,QURU,intermediate,Li,40.5,29.8,276,NA,JMF,"E, W"
+GE1,71,QURU,intermediate,Li,30.7,25.5,284,NA,AD,"E, W"
+GE1,72,PIST,codominant,Li,36.8,24.4,265,NA,NP,"E, W"
+GE1,73,BEPA,codominant,Li,26.4,16.6,252,NA,DB,"E, W"
+GE1,74,PIST,codominant,Li,51.5,22.1,278,NA,JMF,"E, W"
+GE1,75,PIST,codominant,Li,37.4,22.1,282,NA,JMF,"E, W"
+GE1,76,QUAL,intermediate,Li,45.9,20,303,NA,AD,"E, W"
+GE1,77,PIST,dominant,Li,21.7,15.4,252,NA,DB,E-W
+GE1,78,QU-,NA,Sn,27.1,9.5,262,NA,NA,NA
+GE1,79,PIST,codominant,Li,41.4,21.5,296,NA,NP,"N, S"
+GE1,80,QURU,codominant,Li,58,21.5,298,NA,JMF,"NE, SW"
+GE1,81,PIST,codominant,Li,31,18.3,306,NA,DB,E-W
+GE1,82,QURU,codominant,Li,42,8.3,311,NA,AD,"E, W"
+GE1,83,PIST,codominant,Li,39,22.4,306,NA,DB,E-W
+GE1,84,QURU,codominant,Li,44.5,24.6,314,NA,NP,"E, W"
+GE1,85,QURU,codominant,Li,44.6,30,271,NA,JMF,"N, S"
+GE1,86,QURU,dominant,Li,51.8,15.5,340,NA,DB,"N, S"
+GE1,87,QUMO,codominant,Li,39.1,10.9,288,NA,AD,"E, W"
+GE1,88,QURU,codominant,Li,35.1,27.8,331,NA,JMF,"N, S"
+GE1,89,PIST,codominant,Li,39.5,16.5,319,NA,NP,"N, S"
+GE1,90,ACRU,suppressed,Li,18.6,12.6,307,NA,AD,"N, S"
+GE1,91,QU-,NA,Sn,27.8,15.5,340,4,NA,NA
+GE1,92,PIST,suppressed,Li,12.5,9,330,NA,JMF,N-S
+GE1,93,ACRU,suppressed,Li,10.3,9.4,318,NA,NA,NA
+GE1,94,QUAL,suppressed,Sn,12.6,7.5,318,2,NA,N-S
+GE1,95,ACRU,suppressed,Sn,20.8,5.9,328,NA,NA,NA
+GE1,96,PIST,intermediate,Li,14,6.9,292,NA,JMF,N-S
+GE1,97,QURU,codominant,Li,30.5,4.4,274,NA,AD,E-W
+GE1,98,PIST,codominant,Li,34.1,8.6,258,NA,DB,E-W
+GE1,99,PIST,codominant,Li,21.1,12.3,300,NA,DB,N-S
+GE1,100,PIST,dominant,Li,54,3.2,339,NA,NP,"N, S"
+GE1,101,PIST,codominant,Li,19.7,8.4,286,NA,JMF,"E, W"
+GE1,102,PIST,NA,Sn,29.3,15.8,279,4,NA,NA
+GE1,103,QU-,NA,Lo,47.5,25.8,272,3,NA,NA
+GE1,104,PIST,NA,Lo,41,22.1,281,4,NA,NA
+GE1,105,QU-,NA,Lo,28.5,17.8,340,4,NA,NA
+GE1,106,QU-,NA,Lo,21.8,16.5,352,3,NA,NA
+GE1,107,PIST,NA,Lo,8.9,6.9,58,3,NA,NA
+GE1,108,BIPA,NA,Lo,29.7,19.7,43,5,NA,NA
+GE1,109,QU-,NA,Lo,20.7,19.7,45,3.5,NA,NA
+GE2,1,PIST,codominant,Li,32.5,2.7,112,NA,JMF,"S, W"
+GE2,2,PIST,codominant,Li,37.2,3.8,133,NA,CL,"N, S"
+GE2,3,PIST,codominant,Li,38.3,3.9,73,NA,NP,"E, W"
+GE2,4,PIST,codominant,Li,26.3,9.1,82,NA,AD,N-S
+GE2,5,QUAL,suppressed,Sn,27.9,7.2,135,2.5,NP,"N, S"
+GE2,6,QUAL,codominant,Li,39,12.9,155,NA,JMF,"E, W"
+GE2,7,QURU,codominant,Li,23.5,12.1,138,NA,CL,"N, S, E"
+GE2,8,QURU,codominant,Li,42.3,11.9,111,NA,AD,"N, S"
+GE2,9,ACRU,intermediate,Li,19.5,12.3,101,NA,JMF,E-W
+GE2,10,QURU,codominant,Li,41.1,17.6,157,NA,CL,"E, W"
+GE2,11,PIST,dominant,Li,48.3,18.2,145,NA,NP,"E, W"
+GE2,12,QURU,codominant,Li,29.5,21.1,102,NA,AD,"E, W"
+GE2,13,PIST,intermediate,Li,20.2,16.5,104,NA,AD,E-W
+GE2,14,PIST,codominant,Li,21.5,14.2,163,NA,JMF,E-W
+GE2,15,QUAL,codominant,Li,40.4,16.5,178,NA,JMF,"E, W"
+GE2,16,QUMO,codominant,Li,31.7,24.9,98,NA,NP,"E, W"
+GE2,17,PIST,codominant,Li,35.4,26.4,105,NA,NP,"E, W"
+GE2,18,QURU,intermediate,Li,33.3,26,138,NA,CL,"E, W"
+GE2,19,QURU,intermediate,Li,36.2,26,146,NA,CL,NA
+GE2,20,PIST,dominant,Li,40,25.3,177,NA,JMF,"E, W"
+GE2,21,PIST,dominant,Li,47.5,29.3,152,NA,CL,N
+GE2,22,QURU,codominant,Li,37.9,29.4,187,NA,JMF,"N, S"
+GE2,23,QUMO,suppressed,Sn,34.1,19.1,162,NA,NA,NA
+GE2,24,QUMO,intermediate,Li,39.2,25.6,122,NA,NP,"N, S"
+GE2,25,QURU,codominant,Li,46.4,28.1,163,NA,?,"E, W"
+GE2,26,QUMO,codominant,Li,32.4,6.4,210,NA,JMF,"E, W"
+GE2,27,ACRU,suppressed,Li,13.2,9.9,198,NA,NP,N-S
+GE2,28,PIST,dominant,Li,31.5,8.3,226,NA,AD,N-S
+GE2,29,PIST,suppressed,Li,11.3,11.8,205,NA,NP,N-S
+GE2,30,QURU,suppressed,Li,23.1,11.6,221,NA,JMF,"N, S"
+GE2,31,PIST,NA,Sn,18.1,15.1,216,3.5,NA,NA
+GE2,32,PIST,codominant,Li,32.2,15.4,242,NA,AD,E-W
+GE2,33,PIST,codominant,Li,28.4,16.1,220,NA,JL,"E, S"
+GE2,34,QURU,codominant,Li,24.4,19,213,NA,NP,E-W
+GE2,35,QUMO,codominant,Li,31.7,21.5,209,NA,JMF,"N, S, E"
+GE2,36,QURU,intermediate,Li,44,16.5,229,NA,NP,"S, W"
+GE2,37,PIST,codominant,Li,41.6,21.6,239,NA,AD,"N, S"
+GE2,38,QU-,NA,Lo,27.3,2.9,232,3,NA,NA
+GE2,39,PIST,codominant,Li,32.7,22.9,242,NA,JL,N-S
+GE2,40,PIST,codominant,Li,23.5,12.3,253,NA,JMF,E-W
+GE2,41,QURU,codominant,Li,38,11.4,254,NA,JMF,"N, S"
+GE2,42,QURU,intermediate,Li,32.6,15.5,253,NA,NP,"N, S"
+GE2,43,PIST,suppressed,Li,22.2,16.9,260,NA,NP,E-W
+GE2,44,PIST,dominant,Li,48.7,24.6,253,NA,AD,"N, S"
+GE2,45,PIST,dominant,Li,47.2,18,268,NA,NP,"N, S"
+GE2,46,QURU,intermediate,Li,36.2,22.8,266,NA,NP,"N, S"
+GE2,47,QURU,NA,Lo,54.6,11.5,272,1,JMF,"N, S"
+GE2,48,PIST,NA,Lo,28.1,14.5,283,1,JMF,N-S
+GE2,49,QUMO,codominant,Li,39.4,28,243,NA,JL,"E, W"
+GE2,50,ACRU,suppressed,Li,15.1,8.4,296,NA,AD,N-S
+GE2,51,QURU,suppressed,Li,27.5,17.1,283,NA,JMF,E-W
+GE2,52,PIST,NA,Lo,12.3,19.9,211,3,NA,NA
+GE2,53,PIST,NA,Lo,13,4.5,199,NA,NA,NA
+GE2,54,QUAL,codominant,Li,47.1,6.1,283,NA,NP,"N, S"
+GE2,55,PIST,dominant,Li,51.2,9.8,315,NA,AD,"N, S"
+GE2,56,QUMO,dominant,Li,50.3,23.4,288,NA,JMF,"N, S"
+GE2,57,QUAL,NA,Sn,40.4,49.1,295,3,NP,"N, S"
+GE2,58,QURU,codominant,Li,36.3,13.2,291,NA,JL,"N, S"
+GE2,59,QURU,NA,Sn,31.7,27.4,299,3.5,JMF,"E, W"
+GE2,60,PIST,dominant,Li,70.2,17.8,319,NA,AD,"E, W"
+GE2,61,BELE,codominant,Li,NA,19.4,301,NA,NP,"N, S"
+GE2,62,QUMO,NA,Lo,37.3,15.8,312,3,JMF,N
+GE2,63,QUAL,NA,Lo,21.3,13,342,3,DB,E
+GE2,64,PIST,dominant,Li,55.2,16.1,347,NA,JMF,"N, E"
+GE2,65,QURU,codominant,Li,57.2,29.4,350,NA,JMF,"N, S"
+GE2,66,QURU,NA,Sn,45.7,28.8,343,3,AD,"E, W"
+GE2,67,ACRU,codominant,Li,31.9,20.7,328,NA,AD,"E, W"
+GE2,68,BELE,intermediate,Li,22.5,17.8,330,NA,JMF,E-W
+GE2,69,QUAL,dominant,Li,35.2,29.5,338,NA,NP,"N, S"
+GE2,70,QU-,NA,Lo,15,6.2,359,5,NA,NA
+GE2,71,ACRU,suppressed,Li,13.6,4.8,343,NA,DB,E-W
+GE2,72,ACRU,suppressed,Li,12.6,10.5,348,NA,DB,N-S
+GE2,73,PIST,dominant,Li,44.6,3.3,15,NA,DB,"N, S"
+GE2,74,ACRU,suppressed,Li,11.4,3.8,63,NA,JMF,E-W
+GE2,75,QUAL,NA,Sn,27,8.4,85,NA,JMF,"S, W"
+GE2,76,QURU,intermediate,Li,28.4,9.6,45,NA,AD,E-W
+GE2,77,QUAL,intermediate,Li,34.8,13.1,74,NA,NP,"E, S"
+GE2,78,QUMO,intermediate,Li,34.5,10.2,41,NA,JMF,"E, W"
+GE2,79,QUMO,intermediate,Li,26,10.2,41,NA,NP,"N, S"
+GE2,80,ACRU,intermediate,Li,10.5,9.8,61,NA,JMF,E-W
+GE2,81,QURU,NA,Lo,19.1,12.6,17,3,DB,N-S
+GE2,82,QUMO,intermediate,Li,29.1,15,75,NA,NP,"E, W"
+GE2,83,QURU,suppressed,Li,27,17.5,58,NA,AD,N-S
+GE2,84,PIST,codominant,Li,24.5,16.5,74,NA,NP,E-W
+GE2,85,QURU,intermediate,Li,39.4,17.7,18,NA,DB,"N, S"
+GE2,86,QUMO,intermediate,Li,38,18.2,81,2.5,JMF,"N, S"
+GE2,87,QUMO,intermediate,Li,26.1,18.9,80,3,JMF,"N, S"
+GE2,88,QURU,intermediate,Li,39.1,18.9,23,NA,DB,"N, S"
+GE2,89,QURU,dominant,Li,38.3,21.7,53,NA,NP,"N, S"
+GE2,90,QURU,intermediate,Li,32.7,25.2,68,NA,AD,"E, W"
+GE2,91,PIST,dominant,Li,31.4,27.1,75,NA,AD,E-W
+GE2,92,QURU,intermediate,Li,20.4,18.1,41,NA,NP,"N, S"
+GE2,93,QUAL,intermediate,Li,25.8,18.5,21,NA,DB,N-S
+GE2,94,PIST,dominant,Li,47,15.4,34,NA,JMF,"N, E"
+GE2,95,PIST,dominant,Li,34.4,30,46,NA,JMF,"N, S"
+GE2,96,QURU,codominant,Li,39.9,30,32,NA,NP,"N, S"
+GE2,97,PIST,dominant,Li,40,22.9,11,NA,DB,N-S
+GE2,98,PIST,dominant,Li,37.1,22.3,32,NA,AD,"E, W"
+GE2,99,QUMO,codominant,Li,38.9,27.7,17,NA,NP,"N, S"
+GE2,100,QU-,NA,Lo,32.8,15.8,71,4,NA,NA
+GE2,101,QU-,NA,Lo,11.6,8.4,119,3,NA,NA
+GE2,102,QU-,NA,Lo,26,15.9,106,4,NA,NA
+GE2,103,QU-,NA,Lo,30.5,19.5,128,4,NA,NA
+GE2,104,QU-,NA,Lo,26.2,25.2,146,4,NA,NA
+GE2,105,QU-,NA,Lo,27.2,23.9,151,3.5,NA,NA
+GE2,106,QU-,NA,Lo,48.8,28.4,183,5,NA,NA
+GE2,107,QU-,NA,Lo,25,13.5,183,4,NA,NA
+GE3,1,FAGR,suppressed,Li,10.1,6.2,226,NA,NA,E-W
+GE3,2,FAGR,intermediate,Li,22,5.1,255,NA,NA,"E, W"
+GE3,3,ACRU,codominant,Li,27.9,7.2,240,NA,NA,"E, W"
+GE3,4,FAGR,codominant,Li,26.5,10.4,260,NA,NA,"E, W"
+GE3,5,ACRU,dominant,Li,43.3,8.2,220,NA,NA,"N, S"
+GE3,6,FAGR,suppressed,Li,10.4,9.2,215,NA,NA,E-W
+GE3,7,OSVI,suppressed,Li,10.7,8.5,213,NA,NA,E-W
+GE3,8,FAGR,intermediate,Li,19.2,14.2,206,NA,NA,E
+GE3,9,ACRU,intermediate,Li,17.8,16.8,215,NA,NA,E-W
+GE3,10,FAGR,suppressed,Sn,16.2,17.5,210,1,NA,"E, W"
+GE3,11,QUMO,dominant,Li,56.5,18.3,209,NA,NA,"E, W"
+GE3,12,QUMO,dominant,Li,54,25.6,212,NA,NA,"E, W"
+GE3,13,ACSA,dominant,Li,32.7,29.7,228,NA,NA,"E, W"
+GE3,14,ACSA,codominant,Li,29,18.5,239,NA,NA,"E, W"
+GE3,15,QURU,dominant,Li,53.5,21.3,244,NA,NA,"E, W"
+GE3,16,QURU,NA,Sn,48.1,23.4,244,2,NA,NA
+GE3,17,ACSA,intermediate,Li,12.1,14.8,253,NA,NA,"E, W"
+GE3,18,ACSA,dominant,Li,41.9,20.1,266,NA,NA,"W, S"
+GE3,19,ACSA,dominant,Li,34.6,26.9,260,NA,NA,N-S
+GE3,20,FAGR,intermediate,Li,14.1,3.3,356,NA,NA,E-W
+GE3,21,QUMO,dominant,Li,56,7.1,317,NA,NA,"E, W"
+GE3,22,FAGR,intermediate,Li,24.3,9.7,341,NA,NA,E-W
+GE3,23,QUMO,codominant,Li,57.5,12,320,NA,NA,"N, S"
+GE3,24,FAGR,intermediate,Li,25.2,14.5,320,NA,NA,E-W
+GE3,25,FAGR,codominant,Li,25.8,15.9,307,NA,NA,E-W
+GE3,26,FAGR,codominant,Li,25.1,10.3,303,NA,NA,E-W
+GE3,27,FAGR,intermediate,Li,16,7.2,299,NA,NA,N-S
+GE3,28,FAGR,intermediate,Li,25.2,7.9,292,NA,NA,N-S
+GE3,29,FAGR,codominant,Li,32.1,5.6,290,NA,NA,N-S
+GE3,30,FAGR,codominant,Li,21.3,13.3,277,NA,NA,E-W
+GE3,31,FAGR,intermediate,Li,30.7,22.3,276,NA,NA,E-W
+GE3,32,FAGR,NA,Sn,23.4,19.8,280,1,NA,E-W
+GE3,33,ACRU,dominant,Li,44.9,22.1,286,NA,NA,"N, S"
+GE3,34,ACRU,dominant,Li,42.1,18.2,294,NA,NA,"E, W"
+GE3,35,FAGR,intermediate,Li,17.5,19.8,325,NA,NA,E-W
+GE3,36,ACSA,dominant,Li,64.9,24.1,325,NA,NA,"N, S"
+GE3,37,QURU,dominant,Li,40.1,28.1,332,NA,NA,"E, W"
+GE3,38,QUMO,dominant,Li,81.3,15.5,335,NA,NA,"S, E"
+GE3,40,QURU,codominant,Li,45.5,16.8,294,NA,NA,E
+GE3,41,FAGR,NA,Sn,30.8,29.5,273,1,NA,NA
+GE3,42,ACRU,codominant,Li,26,3.3,1,NA,NA,"E, W"
+GE3,43,FAGR,intermediate,Li,14,5.2,16,NA,NA,E-W
+GE3,44,ACRU,intermediate,Li,11.2,8.8,17,NA,NA,E
+GE3,45,QUMO,dominant,Li,66.4,12.2,18,NA,NA,E
+GE3,46,FAGR,codominant,Li,22.6,11.4,56,NA,NA,"E, W"
+GE3,47,ACRU,codominant,Li,31.9,15.8,44,NA,NA,"E, W"
+GE3,48,QUMO,dominant,Li,62.7,21.3,40,NA,NA,"E, W"
+GE3,49,FAGR,NA,Sn,24.5,14.3,28,2,NA,E-W
+GE3,50,FAGR,codominant,Li,21.2,15.1,37,NA,NA,"E, W"
+GE3,51,ACRU,codominant,Li,41.5,22.7,12,NA,NA,"E, W"
+GE3,52,QUMO,dominant,Li,52.5,29.6,6,NA,NA,"S, E, W"
+GE3,53,QUMO,dominant,Li,53.1,29.6,40,NA,NA,"N, S"
+GE3,54,ACRU,intermediate,Li,15.9,4.3,98,NA,NA,"S, E"
+GE3,55,ACSA,codominant,Li,26,5.3,96,NA,NA,E-W
+GE3,56,QUMO,dominant,Li,60.2,9.2,118,NA,NA,"S, W"
+GE3,57,ACRU,codominant,Li,31.6,9,102,NA,NA,E-W
+GE3,58,ACSA,codominant,Li,48.9,17.2,99,NA,NA,E-W
+GE3,59,QU-,NA,Sn,27.1,19.8,95,2,NA,NA
+GE3,60,ACRU,codominant,Li,40.8,24.9,120,NA,NA,"E, W"
+GE3,61,QUMO,dominant,Li,71.9,30,118,NA,NA,"E, W"
+GE3,62,QUMO,codominant,Li,44.3,26.6,126,NA,NA,"E, W"
+GE3,63,ACRU,codominant,Li,41.3,29,123,NA,NA,"E, W"
+GE3,64,ACSA,intermediate,Li,19,11.3,146,NA,NA,"E, W"
+GE3,65,ACRU,NA,Sn,30.5,3.7,169,1,NA,NA
+GE3,66,QURU,dominant,Li,45.5,19.5,150,NA,NA,"E, W"
+GE3,67,FAGR,codominant,Li,20.4,19.3,155,NA,NA,N-S
+GE3,68,ACRU,codominant,Li,37.9,23,153,NA,NA,"E, W"
+GE3,69,ACSA,codominant,Li,36.3,28.6,148,NA,NA,E-W
+GE3,70,QUMO,NA,Lo,53.2,14.5,230,2,NA,"W, S"
+GE3,71,FAGR,NA,Lo,22.7,10.1,188,2,NA,N-S
+GE3,72,NA,NA,Sn,18,12.2,240,5,NA,NA
+GE3,73,NA,NA,Lo,52.2,23.2,248,3,NA,NA
+GE3,74,FAGR,NA,Lo,24.7,15.9,219,2,NA,"E, W"
+GE3,75,FAGR,NA,Lo,42.3,5,168,4,NA,NA
+GE3,76,FAGR,NA,Lo,30,29.7,118,3,NA,NA
+GE3,77,FAGR,NA,Lo,12.7,8.5,78,2,NA,NA
+GE3,78,QU-,NA,Lo,17.5,10.7,74,3,NA,NA
+GE3,79,ACRU,NA,Lo,18.2,9.8,60,1,NA,"E, W"
+GE3,80,NA,NA,Lo,33.1,9,354,4,NA,NA
+GE3,81,NA,NA,Lo,27.2,19.3,345,4,NA,NA
+GE3,82,BEPA,NA,Lo,35.4,22.5,305,1,NA,E

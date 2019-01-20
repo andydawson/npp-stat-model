@@ -1,0 +1,11 @@
+productVersion=0.1
+dvers = 'v3.0'
+mvers = 'v3.0'
+
+location='HMC'
+
+outputDir="/home/adawson/Documents/projects/npp-reformat/output"
+dataDir="/home/adawson/Documents/projects/npp-reformat/data"
+tmpDir="/home/adawson/Documents/projects/npp-reformat/tmp"
+
+projectDir="/home/adawson/Documents/projects/npp-reformat"
