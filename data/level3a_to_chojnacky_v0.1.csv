@@ -1,0 +1,36 @@
+﻿level3a,pecan_allometry_spcd,pecan_allometry_common_names,,,,,,,,,,beta0,beta1
+Alder,351,red  alder,,,5,351,,,,alnus,,-2.5932,2.5349
+Ash,540;541;543;544,not sufficient allometries to use 540,,,6,540;541;543;544,,,22,White ash,0.55,-1.8384,2.3524
+Atlantic white cedar,241,northern white cedar,,,2,241,plus 0 gen soft,,2,Cedar  <.30,0.29,-1.9615,2.1063
+Bald cypress,318;802;541;731,"for None close/other hardwoods Charlie recommends: 318 sugar maple, 802 white oak, 541 white ash, 731 sycamore",,,3,0,generic softwoods,,,Cup<.40,,-2.6327,2.4757
+Basswood,951,American  basswood,,,4,951,,,19,Tilia/Aescl,0.32,-2.4108,2.5011
+Beech,531,American  beech,,,7,531,,,18,Oaks/BeechChest,.56 chest:.40,-2.0705,2.441
+Birch,371;372;375,"371 yellow birch, 372 sweet birch,375 paper birch",,,25,371;372;375,,,12,Beal .5-.59,0.55,-1.8096,2.348
+Black gum,693,blackgum,,,4,693,,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Black gum/sweet gum,693;611,"693 black gum north, 611 sweet gum south",,,10,693,,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Buckeye,332,yellow  buckeye,,,1,332,plus 1000 gen hdwds,,19,Tilia/Aescl,0.32,-2.4108,2.5011
+Cedar/juniper,241,northern white cedar,,,2,241,,,2,Cedar  <.30,0.29,-1.9615,2.1063
+Cherry,318;802;541;731,not sufficient allometries to use 762,,,17,1000,generic hardwoods,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Chestnut,318;802;541;731,"for None close/other hardwoods Charlie recommends: 318 sugar maple, 802 white oak, 541 white ash, 731 sycamore",,,17,1000,generic hardwoods,,18,Oaks/BeechChest,.56 chest:.40,-2.0705,2.441
+Dogwood,315;471;491;319;355;356;357;931;935;391;701;660;761;500;501;502;763;662;663;765;766,not sufficient allometries to use 491,,,17,1000,generic hardwoods,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Elm,318;802;541;731,not sufficient allometries to use 970,,,1,970,plus 1000 gen hdwds,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Fir,12,balsam fir,,,6,12,,,1,Fir (<.35),0.33,-2.3123,2.3482
+Hackberry,318;802;541;731,"for None close/other hardwoods Charlie recommends: 318 sugar maple, 802 white oak, 541 white ash, 731 sycamore",,,17,1000,generic hardwoods,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Hemlock,261,eastern hemlock,,,5,261,,,8,Tsuga <.40,0.38,-2.348,2.3876
+Hickory,400,hickory  sp.,,,10,400,,,16,Carya/Jugl,0.63,-2.5095,2.6175
+Ironwood,315;471;491;319;355;356;357;931;935;391;701;660;761;500;501;502;763;662;663;765;766,not sufficient allometries to use 701,,,1,701,plus 1000 gen hdwds,,14,Osvi >.6,0.63,-2.2652,2.5349
+Locust,901,black  locust,,,2,901,plus 1000 gen hdwds,,17,Locust,0.66,-2.5095,2.5437
+Maple,318;316,"most 318 sugar maple, some 316  red  maple",,,33,318;316,,,10,Acsa >.50,0.56,-1.8011,2.3852
+Mulberry,318;802;541;731,"for None close/other hardwoods Charlie recommends: 318 sugar maple, 802 white oak, 541 white ash, 731 sycamore",,,17,1000,generic hardwoods,,18,Oaks/BeechChest,.56 chest:.40,-2.0705,2.441
+Oak,802;833;832;837,"most 802  white oak and 833  northern red  oak, some 832  chestnut  oak and 837  black  oak    ",,,30,802;833;832;837,,,18,Oaks/BeechChest,.56 chest:.40,-2.0705,2.441
+Other hardwood,318;802;541;731,suite of hardwoods or other hardwood,,,17,1000,generic hardwoods,,,mix hdwd,,-2.48,2.4835
+Pine,126;129;125;126,"most  126  pitch  pine and 129  eastern white  pine, some 125  red  pine and 126  pitch  pine",,,21,126;129;125;126,,,6,Pist/Pire <.45,0.34,-2.6177,2.4638
+Poplar,746;743;741,"most 746 quaking aspen and 743  bigtooth  aspen, some741  balsam  poplar",,,9,746;743;741,,,23,Populus,0.32,-2.6863,2.4561
+Poplar/tulip poplar,621,most 621    yellow-poplar ,,,10,621,,,20,Magnolia/Tulip,0.4,-2.4177,2.5011
+Spruce,97;94;95,97 red spruce in the East; 94 white spruce and 95 black spruce in the Midwest,,,15,94;95,,,5,Pigl/Pima/piru,0.37,-2.1364,2.3233
+Sweet gum,611,sweetgum,,,6,611,,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Sycamore,731,sycamore,,,2,731,plus 1000 gen hdwds,,15,Nysa/Ploc/Cherry/Elm/Celtis,0.46,-2.2118,2.4133
+Tamarack,71,tamarack,,,3,71,plus 1000 gen hdwds,,4,Larix,0.49,-2.3012,2.3853
+Tulip poplar,621,most 621    yellow-poplar ,,,10,621,,,20,Magnolia/Tulip,0.4,-2.4177,2.5011
+Walnut,318;802;541;731,"for None close/other hardwoods Charlie recommends: 318 sugar maple, 802 white oak, 541 white ash, 731 sycamore",,,17,1000,generic hardwoods,,16,Carya/Jugl,0.63,-2.5095,2.6175
+Willow,920,willow,,,2,920,plus 1000 gen hdwds,,,willow,,-2.2094,2.3867
