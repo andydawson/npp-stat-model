@@ -1,49 +1,71 @@
-## Things I did: 
-## - I duplicated the file in that case that I unknowingly delete something that we need. 
-## - Save each different part to a new variable so we can keep the results for each step in case we need to rerun 
-## - Commented out all of the "save" parts because I kind of think that it's unnecessary rn
+
+# MK ??: Why do we save each step?
 
 rm(list=ls())
+setwd('~/Desktop/npp-stat-model')
 
 library(ggplot2)
 library(reshape2)
-library(abind)
 
-# do we need this?
+# MK ??: What is the config file? Do we need it? How do we edit it?
 #source('config')
 
 #############################################################################################################
 ### A. Set up working environment and directory for script ##################################################
 #############################################################################################################
 
+########################################
+# Variables to be adjusted for each site
+########################################
+
 # date for save purposes
 date = '13Nov2019'
 
 # set up output 
-site = 'HF'
-output_dir = 'HF'
-location = 'HF'
-if (!file.exists(paste0('output/', output_dir))){
-  dir.create(paste0('output/', output_dir))
-  dir.create(paste0('output/', output_dir, '/figures'))
-}
+site <- 'RH'
 
+# does site have census data available?
+census = FALSE
+
+# MK ??: What is the difference between these two version numbers?
 # data version
 dvers = 'v5.0'
 mvers = 'v4.0'
 
-# load input data for census data and no census data
-fname_data = paste0('tree_data_20_', dvers)
-load(file=paste0('data/dump/', fname_data, '.rdata'))
-fname_data = paste0('tree_data_20_no_census_', dvers)
-load(file=paste0('data/dump/', fname_data, '.rdata'))
+# burn-in range
+burn = 1000
 
+# load model output data for site
+data = readRDS('~/Downloads/tree_data_ROOSTER_STAN_v0.1.RDS')
+
+# MK : in the script, I assume that there either two models when there is census data or one model when there isn't
+# when census data exists, use census model first
+models = c('Model RW')
+#models = c('Model RW + Census', 'Model RW')
+#fnames = c('ring_model_t_date_sapl_size_pdbh', 'ring_model_t_date_sapl_size_pdbh_nc')
+#fnames = c('ring_model_t_date_sapl_size_pdbh_NOCOVAR', 'ring_model_t_pdbh_nc_NOCOVAR_sigd')
+
+#fname_data = paste0('tree_data_20_', dvers)
+#load(file=paste0('data/dump/', fname_data, '.rdata'))
+#fname_data = paste0('tree_data_20_no_census_', dvers)
+#load(file=paste0('data/dump/', fname_data, '.rdata'))
+
+# are dbh and ab files already created? do we want to recreate them? 
+run_predict  = TRUE
+
+########################################
+
+# create output directory
+output_dir <- file.path('output',site)
+if (!file.exists(output_dir)){
+  dir.create(output_dir)
+  dir.create(file.path(output_dir, 'figures'))
+}
+
+# MK ??: preference on set-up of directory?
 # get ring width data 
-# fnames = c('ring_model_t_date_sapl_size_pdbh', 'ring_model_t_date_sapl_size_pdbh_nc')
-fnames = c('ring_model_t_date_sapl_size_pdbh_NOCOVAR', 'ring_model_t_pdbh_nc_NOCOVAR_sigd')
-models = c('Model RW + Census', 'Model RW')
 nmodels = length(fnames)
-post= list()
+post = list()
 for (i in 1:length(fnames)) {
   fname_model = fnames[i]
   load(file   = paste0('data/dump/', fname_model, '_', mvers, '.Rdata'))
@@ -52,9 +74,9 @@ for (i in 1:length(fnames)) {
 niter = dim(post[[1]])[1]
 
 # how many iterations to keep?
-burn = 1000
 keep = niter - burn
 
+# MK ??: Do species always follow this same order? Or is it through the order given in taxa match?
 # pft list 
 pfts = list(ACRU = data.frame(spcd=316,acronym="ACRU"),
             ACSA = data.frame(spcd=318,acronym="ACSA3"),
@@ -83,12 +105,11 @@ pft_list  = sort(unique(names(pfts)))
 # Input: NPP Stat Model ring width results for the two different models
 # Output: 4 large matrices holding the dbh and aboveground biomass predictions for the two different models (dbh_p_1_raw)
 
-# are dbh and ab files already created? do we want to recreate them? 
-run_predict  = TRUE
-
 # match species acronyms to level3a available species/pfts 
 acro_level3a = read.csv('data/acronym_to_level3a_v0.1.csv', stringsAsFactors = FALSE)
+acro_level3a = left_join(data$taxaMatch, acro_level3a, by = c('species'='acronym'))
 choj = read.csv('data/level3a_to_chojnacky_v0.4.csv')
+choj = left_join(acro_level3a, choj, id = 'level3a') 
 
 # this function takes the stat model results (dbh, rw) and returns a list of dbh arrays (tree X years X iterations)
 # for each pft in the data, a list of the tree indices in the order they were used in the list, and the order of the
@@ -100,7 +121,8 @@ build_dbh_p <- function(out, rw2year, rw2tree, Nyears, tree_list, keep, taxaMatc
   niter   = dim(out)[1]
   
   # get species from taxon list 
-  pft   = as.vector(taxaMatch[match(taxon_list, taxaMatch$taxon),'species'])
+  #pft   = as.vector(taxaMatch[match(taxon_list, taxaMatch$taxon),'species'])
+  pft = as.vector(taxaMatch[match(taxon_list, taxaMatch$number),'species'])
   pfts  = sort(unique(pft))
   N_pft = length(pfts) 
   
@@ -173,7 +195,7 @@ if (run_predict){
   
   # for first model with census 
   # obtain diameter estimates for all trees for
-  dbh_1 = build_dbh_p(post[[1]], x2year, x2tree, N_years, trees, keep, taxaMatch, taxon)
+  dbh_1 = build_dbh_p(post[[1]], data$x2year, data$x2tree, data$N_years, trees, keep, data$taxaMatch, data$taxon)
   dbh_p_1 = dbh_1$dbh_p
   tree_order_1 = dbh_1$tree_order
   pft_order_1  = dbh_1$pft_order
@@ -183,54 +205,63 @@ if (run_predict){
   dbh_p_1 = dbh_p_1_org[sort(tree_order_1, index.return=TRUE)$ix,,]
   
   # get choj pft index for coefficients in matrix 
-  choj_pfts_1 = as.vector(sapply(pft_list[taxon[tree_order_1]], function(x){which(acro_level3a$acronym == x)}))
+  choj_pfts_1 = tree_order_1
   
   # find biomass for all trees, years, and iterationss
-  ab_p_1 = build_ab_choj(dbh_p_1, N_trees, N_years, keep, choj_pfts_1)
+  ab_p_1 = build_ab_choj(dbh_p_1, data$N_trees, data$N_years, keep, choj_pfts_1)
   
   # save files 
-  #saveRDS(dbh_p_1, paste0('output/',site,'/dbh_p_1_', location, '_', mvers, '.rds'))
-  #saveRDS(ab_p_1, paste0('output/',site,'/ab_p_1_', location, '_', mvers, '.rds'))
+  #saveRDS(dbh_p_1, paste0('output/',site,'/dbh_p_1_', site, '_', mvers, '.rds'))
+  #saveRDS(ab_p_1, paste0('output/',site,'/ab_p_1_', site, '_', mvers, '.rds'))
   
-  # for second model without census 
   # organize tree info for data with no census 
-  trees_p = sort(unique(x2tree_p)) # get all trees ids in data
-  taxon_p = taxon[trees_p] # gets taxons of unique trees
-  x2idx_p = match(x2tree_p, unique(x2tree_p)) # matches all trees from data to a numerical index 
-  pft_list_p = pft_list[taxon_p] # matches all trees to a pft
+  trees_p = sort(unique(datat$x2tree_p)) # get all trees ids in data
+  taxon_p = data$taxon[trees_p] # gets taxons of unique trees
+  x2idx_p = match(x2tree_p, unique(data$x2tree_p)) # matches all trees from data to a numerical index 
+  pft_list_p = data$taxaMatch$species[taxon_p] # matches all trees to a pft
   
-  # get diameter estimates from ring widths given by stat model 
-  dbh_2 = build_dbh_p(post[[2]], x2year_p, x2tree_p, N_years, trees_p, keep, taxaMatch, taxon_p)
-  dbh_p_2 = dbh_2$dbh_p
-  tree_order_2 = dbh_2$tree_order
-  pft_order_2  = dbh_2$pft_order
-  
-  # make list of arrays into one big array (all trees X years X iterations)
-  dbh_p_2_org = abind(dbh_p_2, along=1)
-  dbh_p_2 = dbh_p_2_org[sort(tree_order_2, index.return=TRUE)$ix,,]
-  
-  # get choj pft index for coefficients in matrix 
-  choj_pfts_2 = as.vector(sapply(pft_list[taxon[tree_order_2]], function(x){which(acro_level3a$acronym == x)}))
-  
-  # find biomasss for all trees, years, and iterations
-  ab_p_2 = build_ab_choj(dbh_p_2, N_trees_p, N_years, keep, choj_pfts_2)
-  
-  # save files 
-  #saveRDS(dbh_p_2, paste0('output/',site,'/dbh_p_2_', location, '_', mvers, '.rds'))
-  #saveRDS(ab_p_2, paste0('output/',site,'/ab_p_2_', location, '_', mvers, '.rds'))
-
+  # is there another model to process?
+  if (census){
+    # get diameter estimates from ring widths given by stat model 
+    dbh_2 = build_dbh_p(post[[2]], x2year_p, x2tree_p, N_years, trees_p, keep, taxaMatch, taxon_p)
+    dbh_p_2 = dbh_2$dbh_p
+    tree_order_2 = dbh_2$tree_order
+    pft_order_2  = dbh_2$pft_order
+    
+    # make list of arrays into one big array (all trees X years X iterations)
+    dbh_p_2_org = abind(dbh_p_2, along=1)
+    dbh_p_2 = dbh_p_2_org[sort(tree_order_2, index.return=TRUE)$ix,,]
+    
+    # get choj pft index for coefficients in matrix 
+    choj_pfts_2 = tree_order_2
+    
+    # find biomasss for all trees, years, and iterations
+    ab_p_2 = build_ab_choj(dbh_p_2, N_trees_p, N_years, keep, choj_pfts_2)
+    
+    # save files 
+    #saveRDS(dbh_p_2, paste0('output/',site,'/dbh_p_2_', site, '_', mvers, '.rds'))
+    #saveRDS(ab_p_2, paste0('output/',site,'/ab_p_2_', site, '_', mvers, '.rds'))
+    
+  }
 }else {
-  dbh_p_1 = readRDS( paste0('output/dbh_p_1_', location, '_', mvers, '.rds'))
-  ab_p_1  = readRDS(paste0('output/ab_p_1_',  location, '_', mvers, '.rds'))
   
-  dbh_p_2 = readRDS( paste0('output/dbh_p_2_', location, '_', mvers, '.rds'))
-  ab_p_2  = readRDS(paste0('output/ab_p_2_', location, '_', mvers, '.rds'))
+  dbh_p_1 = readRDS( paste0('output/dbh_p_1_', site, '_', mvers, '.rds'))
+  ab_p_1  = readRDS(paste0('output/ab_p_1_',  site, '_', mvers, '.rds'))
+  
+  if (census){
+    dbh_p_2 = readRDS( paste0('output/dbh_p_2_', site, '_', mvers, '.rds'))
+    ab_p_2  = readRDS(paste0('output/ab_p_2_', site, '_', mvers, '.rds'))
+  }
 }
 
+# added separate save variable in case we need to go back to this step
 dbh_p_1_raw = dbh_p_1
 ab_p_1_raw = ab_p_1
-dbh_p_2_raw = dbh_p_2
-ab_p_2_raw = ab_p_2
+
+if (census){
+  dbh_p_2_raw = dbh_p_2
+  ab_p_2_raw = ab_p_2
+}
 
 ##### Step 2: Save all trees (< 5cm) to RDS files for both models #####
 
@@ -238,8 +269,8 @@ ab_p_2_raw = ab_p_2
 # Output: Reduced matrices holding dbh and ab predictions, with trees with mean DBH less than 5 cm removed 
 
 # remove trees that have a mean diameter less than 5 centimeters across all iterations for a given year for both models
-for (tree in 1:N_trees){
-  for (year in 1:N_years){
+for (tree in 1:data$N_trees){
+  for (year in 1:data$N_years){
     dbh_mean = mean(dbh_p_1[tree, year, ], na.rm=TRUE)
     if (is.na(dbh_mean)){next}
     if (dbh_mean < 5){
@@ -248,86 +279,99 @@ for (tree in 1:N_trees){
     }
   }
 }
-for (tree in 1:N_trees_p){
-  for (year in 1:N_years){
-    dbh_mean = mean(dbh_p_2[tree, year, ], na.rm=TRUE)
-    if (is.na(dbh_mean)){next}
-    if (dbh_mean < 5){
-      dbh_p_2[tree, year, ] = rep(NA, keep)
-      ab_p_2[tree, year, ] = rep(NA, keep)
+
+if (census){
+  for (tree in 1:N_trees_p){
+    for (year in 1:N_years){
+      dbh_mean = mean(dbh_p_2[tree, year, ], na.rm=TRUE)
+      if (is.na(dbh_mean)){next}
+      if (dbh_mean < 5){
+        dbh_p_2[tree, year, ] = rep(NA, keep)
+        ab_p_2[tree, year, ] = rep(NA, keep)
+      }
     }
   }
+  
+  dbh_p_2_red = dbh_p_2
+  ab_p_2_red = ab_p_2
 }
 
+# added save variable in case we need to back to this step
 dbh_p_1_red = dbh_p_1
 ab_p_1_red = ab_p_1
-dbh_p_2_red = dbh_p_2
-ab_p_2_red = ab_p_2
 
 ##### Step 3: Adjust for mortality using census data #####
+
+# MK ??: What do we do for sites where census data is not available? Skip this step?
 
 # Input: Reduced diameter and biomass values for all trees for all years and iterations, census data
 # Output: Diameter and biomass values for all trees for all years and iterations smoothed for mortality seen in census data 
 
-# get the census years
-cyr = dbh$yr
-cyr[which(cyr %in% c('01', '11'))] = paste0('20', cyr[which(cyr %in% c('01', '11'))])
-cyr[which(cyr %in% c('62', '69', '75', '91'))] = paste0('19', cyr[which(cyr %in%  c('62', '69', '75', '91'))])
-census_years = as.numeric(sort(unique(cyr)))
-idx_census   = which(years %in% census_years)
-N_census_years = length(census_years)
-dbh = data.frame(dbh, cyr=cyr)
-
-smooth_death <- function(dbh_p, ab_p, last_time_data, last_time, N_trees, years, keep){
+if(census){
   
-  # last_time_data is the last time each tree was measured; only adjust prior to 2011
-  last_time_data[last_time_data == 1992] = 1991
-  idx_adjust = which(last_time_data < 2011)
+  # get the census years
+  cyr = dbh$yr
+  cyr[which(cyr %in% c('01', '11'))] = paste0('20', cyr[which(cyr %in% c('01', '11'))])
+  cyr[which(cyr %in% c('62', '69', '75', '91'))] = paste0('19', cyr[which(cyr %in%  c('62', '69', '75', '91'))])
+  census_years = as.numeric(sort(unique(cyr)))
+  idx_census   = which(years %in% census_years)
+  N_census_years = length(census_years)
+  dbh = data.frame(dbh, cyr=cyr)
   
-  dbh_p_smooth = dbh_p
-  ab_p_smooth  = ab_p
-  
-  for (i in 1:N_trees) {
-    print(i)
+  # MK ??: What is the logic behind the smoothing function?
+  smooth_death <- function(dbh_p, ab_p, last_time_data, last_time, N_trees, years, keep){
     
-    # index of last year measured with data 
-    idx_last = which(years == last_time_data[i])
+    # last_time_data is the last time each tree was measured; only adjust prior to 2011
+    last_time_data[last_time_data == 1992] = 1991
+    idx_adjust = which(last_time_data < 2011)
     
-    if (idx_last >= 52) {
-      next
+    dbh_p_smooth = dbh_p
+    ab_p_smooth  = ab_p
+    
+    for (i in 1:N_trees) {
+      print(i)
       
-      # fill in for death that died between last measured and first census without tree
-    } else if (last_time_data[i] < last_time[i]) {
+      # index of last year measured with data 
+      idx_last = which(years == last_time_data[i])
       
-      print('Adjusting dbh and ab due to death!')
-      
-      # difference in years
-      sample_int =  last_time[i] - last_time_data[i]
-      
-      for (k in 1:keep){
-        # pick random year in time span for time of death 
-        mort_year = sample(sample_int,1)
-        years_na = seq((last_time_data[i]+mort_year), last_time[i])
-        idx_na   = which(years %in% years_na)
+      if (idx_last >= 52) {
+        next
         
-        for (idx in idx_na){
-          dbh_p_smooth[i,idx,k] = NA
-          ab_p_smooth[i,idx,k] = NA
+        # fill in for death that died between last measured and first census without tree
+      } else if (last_time_data[i] < last_time[i]) {
+        
+        print('Adjusting dbh and ab due to death!')
+        
+        # difference in years
+        sample_int =  last_time[i] - last_time_data[i]
+        
+        for (k in 1:keep){
+          # pick random year in time span for time of death 
+          mort_year = sample(sample_int,1)
+          years_na = seq((last_time_data[i]+mort_year), last_time[i])
+          idx_na   = which(years %in% years_na)
+          
+          for (idx in idx_na){
+            dbh_p_smooth[i,idx,k] = NA
+            ab_p_smooth[i,idx,k] = NA
+          }
         }
       }
     }
+    return(list(dbh_p_smooth=dbh_p_smooth, ab_p_smooth=ab_p_smooth))
   }
-  return(list(dbh_p_smooth=dbh_p_smooth, ab_p_smooth=ab_p_smooth))
+  
+  # smooth out dbh and aboveground biomass for both models
+  smooth_1 = smooth_death(dbh_p_1, ab_p_1, last_time_data, last_time_census, N_trees, years, keep)
+  dbh_p_1 = smooth_1$dbh_p_smooth
+  ab_p_1 = smooth_1$ab_p_smooth
+  
+  smooth_2 = smooth_death(dbh_p_2, ab_p_2, last_time_data_p, last_time_census_p, N_trees_p, years, keep)
+  dbh_p_2 = smooth_2$dbh_p_smooth
+  ab_p_2  = smooth_2$ab_p_smooth 
 }
 
-# smooth out dbh and aboveground biomass for both models
-smooth_1 = smooth_death(dbh_p_1, ab_p_1, last_time_data, last_time_census, N_trees, years, keep)
-dbh_p_1 = smooth_1$dbh_p_smooth
-ab_p_1 = smooth_1$ab_p_smooth
-
-smooth_2 = smooth_death(dbh_p_2, ab_p_2, last_time_data_p, last_time_census_p, N_trees_p, years, keep)
-dbh_p_2 = smooth_2$dbh_p_smooth
-ab_p_2  = smooth_2$ab_p_smooth
+##### Step 4: Melt data matrices into data frames for easier use #####
 
 # melt down to data frames
 dimnames(dbh_p_1)[[1]] <- seq(1, 603)
@@ -340,90 +384,149 @@ ab_melt = melt(ab_p_1)
 colnames(ab_melt) = c("tree", "year", "iter", "ab")
 ab_melt$year = years[ab_melt$year]
 
-dimnames(dbh_p_2)[[1]] <- trees_p
-dbh2_melt = melt(dbh_p_2)
-colnames(dbh2_melt) = c("tree", "year", "iter", "dbh")
-dbh2_melt$year = years[dbh2_melt$year]
+if (census){
+  dimnames(dbh_p_2)[[1]] <- trees_p
+  dbh2_melt = melt(dbh_p_2)
+  colnames(dbh2_melt) = c("tree", "year", "iter", "dbh")
+  dbh2_melt$year = years[dbh2_melt$year]
+  
+  dimnames(ab_p_2)[[1]] <- trees_p
+  ab2_melt = melt(ab_p_2)
+  colnames(ab2_melt) = c("tree", "year", "iter", "ab")
+  ab2_melt$year = years[ab2_melt$year]
+}
 
-dimnames(ab_p_2)[[1]] <- trees_p
-ab2_melt = melt(ab_p_2)
-colnames(ab2_melt) = c("tree", "year", "iter", "ab")
-ab2_melt$year = years[ab2_melt$year]
+if (!census){
+  # put models together
+  dbh_melt_all = data.frame(dbh_melt, model=rep("Model RW", nrow(dbh_melt)))
+  #dbh_melt_all$plot = tree_site_id[dbh_melt_all$tree]
+  dbh_melt_all$plot = plot_id[dbh_melt_all$treee]
+  
+  ab_melt_all = data.frame(ab_melt, model=rep("Model RW", nrow(ab_melt)))
+  ab_melt_all$plot = plot_id[ab_melt_all$tree]
+  #ab_melt_all$plot = tree_site_id[ab_melt_all$tree]
+  
+  ab_mean = aggregate(ab~tree+plot+year+model, ab_melt_all, mean) 
+  ab_sum = aggregate(ab~year+model+plot, ab_mean, sum)
+  
+  # save to new variable in case we need to go back to this step
+  dbh_p_1_smth = dbh_p_1
+  ab_p_1_smth = ab_p_1
+}else{
+  
+  # put models together
+  dbh_melt_all = rbind(data.frame(dbh_melt, model=rep("Model RW + Census", nrow(dbh_melt))), 
+                       data.frame(dbh2_melt, model=rep("Model RW", nrow(dbh2_melt))))
+  #dbh_melt_all$plot = tree_site_id[dbh_melt_all$tree]
+  dbh_melt_all$plot = plot_id[dbh_melt_all$treee]
+  dbh_melt_all$census_id = dbh[match(dbh_melt_all$tree, dbh$stat_id),'census_id']
+  dbh_melt_all$dist_census = census[match(dbh_melt_all$census_id, census$census_id),'dist_census']/3.28084
+  
+  ab_melt_all = rbind(data.frame(ab_melt, model=rep("Model RW + Census", nrow(ab_melt))), 
+                      data.frame(ab2_melt, model=rep("Model RW", nrow(ab2_melt))))
+  #ab_melt_all$plot = tree_site_id[ab_melt_all$tree]
+  ab_melt_all$plot = plot_id[ab_melt_all$tree]
+  
+  ab_mean = aggregate(ab~tree+plot+year+model, ab_melt_all, mean) 
+  ab_sum = aggregate(ab~year+model+plot, ab_mean, sum)
+  
+  # save to new variable in case we need to go back to this step
+  dbh_p_1_smth = dbh_p_1
+  ab_p_1_smth = ab_p_1
+  dbh_p_2_smth = dbh_p_2
+  ab_p_2_smth = ab_p_2
+}
 
-# put models together
-dbh_melt_all = rbind(data.frame(dbh_melt, model=rep("Model RW + Census", nrow(dbh_melt))), 
-                     data.frame(dbh2_melt, model=rep("Model RW", nrow(dbh2_melt))))
-dbh_melt_all$plot = tree_site_id[dbh_melt_all$tree]
-dbh_melt_all$census_id = dbh[match(dbh_melt_all$tree, dbh$stat_id),'census_id']
-dbh_melt_all$dist_census = census[match(dbh_melt_all$census_id, census$census_id),'dist_census']/3.28084
 
-ab_melt_all = rbind(data.frame(ab_melt, model=rep("Model RW + Census", nrow(ab_melt))), 
-                    data.frame(ab2_melt, model=rep("Model RW", nrow(ab2_melt))))
-ab_melt_all$plot = tree_site_id[ab_melt_all$tree]
-# ab_melt_all = ab_melt_all[which(dbh_melt_all$dbh>=5),]
-
-ab_mean = aggregate(ab~tree+plot+year+model, ab_melt_all, mean) 
-ab_sum = aggregate(ab~year+model+plot, ab_mean, sum)
-
-# save to new variable 
-dbh_p_1_smth = dbh_p_1
-ab_p_1_smth = ab_p_1
-dbh_p_2_smth = dbh_p_2
-ab_p_2_smth = ab_p_2
-
-##### Step 4: Calculate biomass and biomass increment #####
+##### Step 5: Calculate biomass and biomass increment #####
 
 # Input: Smoothed, reduced diameter and biomass estimates for all trees for all years and estimates in four matrices (ab in Kg/plot)
 # Output: Melted data frames for aboveground biomass (Mg/ha) and aboveground biomass increment with smoothed and reduced data for
 #         all iterations, years, and trees
 
-
 # in Kg/plot, rescale so it is Mg/ha
 ab_pr1 = ab_p_1/(20^2*pi) * 10
-ab_pr2 = ab_p_2/(20^2*pi) * 10
 
 # melt predicted biomass for both models
 ab_p1_melt = melt(ab_pr1)
 colnames(ab_p1_melt) = c('tree_id', 'year_id', 'iter', 'ab')
-ab_p1_melt$site_id = tree_site_id[ab_p1_melt$tree_id]
+#ab_p1_melt$site_id = tree_site_id[ab_p1_melt$tree_id]
+ab_p1_melt$site_id = data$plot_id[ab_p1_melt$tree_id]
 
-ab_p2_melt = melt(ab_pr2)
-colnames(ab_p2_melt) = c('tree_id', 'year_id', 'iter', 'ab')
-ab_p2_melt$site_id = tree_site_id[ab_p2_melt$tree_id]
-
-# put them together
-ab_p_melt = rbind(data.frame(ab_p1_melt, model=rep('Model RW + Census')), 
-                  data.frame(ab_p2_melt, model=rep('Model RW')))
-ab_p_melt$taxon   = taxon[ab_p_melt$tree_id]
-ab_p_melt$taxon   = taxaMatch[match(ab_p_melt$taxon, taxaMatch$taxon), 'species']
-ab_p_melt$year = years[ab_p_melt$year_id]
+if (census){
+  
+  # in Kg/plot, rescale so it is Mg/ha
+  ab_pr2 = ab_p_2/(20^2*pi) * 10
+  
+  # melt predicted biomass matrix
+  ab_p2_melt = melt(ab_pr2)
+  colnames(ab_p2_melt) = c('tree_id', 'year_id', 'iter', 'ab')
+  #ab_p2_melt$site_id = tree_site_id[ab_p2_melt$tree_id]
+  ab_p2_melt$site_id = data$plot_id[ab_p2_melt$tree_id]
+  
+  # put them together
+  ab_p_melt = rbind(data.frame(ab_p1_melt, model=rep('Model RW + Census')), 
+                    data.frame(ab_p2_melt, model=rep('Model RW')))
+  ab_p_melt$taxon   = taxon[ab_p_melt$tree_id]
+  ab_p_melt$taxon   = data$taxaMatch[match(ab_p_melt$taxon, taxaMatch$number), 'species']
+  #ab_p_melt$taxon   = data$taxaMatch[match(ab_p_melt$taxon, taxaMatch$taxon), 'species']
+  ab_p_melt$year = data$years[ab_p_melt$year_id]
+  
+}else{
+  
+  # create total 
+  ab_p_melt = data.frame(ab_p1_melt, model=rep('Model RW'))
+  ab_p_melt$taxon   = data$taxon[ab_p_melt$tree_id]
+  ab_p_melt$taxon   = data$taxaMatch[match(ab_p_melt$taxon, data$taxaMatch$number), 'species']
+  #ab_p_melt$taxon   = data$taxaMatch[match(ab_p_melt$taxon, data$taxaMatch$taxon), 'species']
+  ab_p_melt$year = data$years[ab_p_melt$year_id]
+  
+}
 
 # save aboveground biomass predictions
-#saveRDS(ab_p_melt, file=paste0('output/',site,'/ab_p_', location, '_', mvers, '.RDS'))
+#saveRDS(ab_p_melt, file=paste0('output/',site,'/ab_p_', site, '_', mvers, '.RDS'))
 
-# determine biomass increment for each dataset 
+# determine biomass increment for model 1 
 abi_p1 = apply(ab_pr1, c(1,3), function(x) diff(x))
 abi_p1 = aperm(abi_p1, c(2, 1, 3))
 abi_p1_melt = melt(abi_p1)
 colnames(abi_p1_melt) = c('tree_id', 'year_id', 'iter', 'abi')
 
-abi_p2 = apply(ab_pr2, c(1,3), function(x) diff(x))
-abi_p2 = aperm(abi_p2, c(2, 1, 3))
-abi_p2_melt = melt(abi_p2)
-colnames(abi_p2_melt) = c('tree_id', 'year_id', 'iter', 'abi')
-
-# put them together
-abi_p_melt = rbind(data.frame(abi_p1_melt, model=rep('Model RW + Census')), 
-                   data.frame(abi_p2_melt, model=rep('Model RW')))
-abi_p_melt$taxon   = taxon[abi_p_melt$tree_id]
-abi_p_melt$taxon   = taxaMatch[match(abi_p_melt$taxon, taxaMatch$taxon), 'species']
-abi_p_melt$site_id = tree_site_id[abi_p_melt$tree_id]
-abi_p_melt$year    = years[abi_p_melt$year_id]
+if (census){
+  
+  # determine biomass increment for model 2
+  abi_p2 = apply(ab_pr2, c(1,3), function(x) diff(x))
+  abi_p2 = aperm(abi_p2, c(2, 1, 3))
+  abi_p2_melt = melt(abi_p2)
+  colnames(abi_p2_melt) = c('tree_id', 'year_id', 'iter', 'abi')
+  
+  # put them together
+  abi_p_melt = rbind(data.frame(abi_p1_melt, model=rep('Model RW + Census')), 
+                     data.frame(abi_p2_melt, model=rep('Model RW')))
+  abi_p_melt$taxon   = data$taxon[abi_p_melt$tree_id]
+  abi_p_melt$taxon   = data$taxaMatch[match(abi_p_melt$taxon, data$taxaMatch$number), 'species']
+  #abi_p_melt$taxon   = data$taxaMatch[match(abi_p_melt$taxon, data$taxaMatch$taxon), 'species']
+  #abi_p_melt$site_id = tree_site_id[abi_p_melt$tree_id]
+  abi_p_melt$site_id = data$plot_id[abi_p_melt$tree_id]
+  abi_p_melt$year    = data$years[abi_p_melt$year_id]
+  
+}else{
+  
+  # put them together
+  abi_p_melt = data.frame(abi_p1_melt, model=rep('Model RW + Census'))
+  abi_p_melt$taxon   = data$taxon[abi_p_melt$tree_id]
+  abi_p_melt$taxon   = data$taxaMatch[match(abi_p_melt$taxon, data$taxaMatch$number), 'species']
+  #abi_p_melt$taxon   = data$taxaMatch[match(abi_p_melt$taxon, data$taxaMatch$taxon), 'species']
+  #abi_p_melt$site_id = tree_site_id[abi_p_melt$tree_id]
+  abi_p_melt$site_id = data$plot_id[abi_p_melt$tree_id]
+  abi_p_melt$year    = data$years[abi_p_melt$year_id]
+  
+}
 
 # save aboveground biomass increment predictions
 #saveRDS(abi_p_melt, file=paste0('output/',site,'/abi_p_', site, '_', mvers, '.RDS'))
 
-##### Step 5: Prep AGB and ABI for wiki #####
+##### Step 6: Prep AGB and ABI for wiki #####
 
 # Saves single data frame containing all aboveground biomass values and aboveground biomass increment values
 # for all trees, years, and iterations in one single large data frame 
@@ -431,7 +534,7 @@ abi_p_melt$year    = years[abi_p_melt$year_id]
 abi_p_melt = abi_p_melt[,c('tree_id', 'year', 'site_id', 'taxon', 'model', 'iter', 'abi')]
 ab_p_melt = ab_p_melt[,c('tree_id', 'year', 'site_id', 'taxon', 'model', 'iter', 'ab')]
 
-## MK ??: Why 2012? HF specific?
+## MK ??: Why 2012? Is this HF specific?
 ab_p_melt = ab_p_melt[ab_p_melt$year<2013,]
 abi_p_melt = abi_p_melt[abi_p_melt$year<2013,]
 
@@ -448,16 +551,16 @@ colnames(abi_p_melt)[which(colnames(abi_p_melt) == "abi")] = 'value'
 # Output: Matrix containing diameter measurements (cm) for all trees for years with increment data given 
 
 N_samples = 200
-dbh_m = array(NA, c(N_trees, N_years))
+dbh_m = array(NA, c(data$N_trees, data$N_years))
 
 # loop through all trees 
-for (i in 1:N_trees) {
+for (i in 1:data$N_trees) {
   print(i)
-  tree = trees[i]
-  pft  = as.vector(taxaMatch[which(taxaMatch$taxon == taxon[tree]),'species'] )
+  tree = data$trees[i]
+  pft  = as.vector(data$taxaMatch[which(data$taxaMatch$taxon == data$taxon[tree]),'species'])
   
   # if tree doesn't have increment data, make NA for all years 
-  if (length(which(m2tree_a == tree)) == 0) {
+  if (length(which(data$m2tree_a == tree)) == 0) {
     print(paste0('No increments for tree ', tree, ' !'))
     
     dbh_idx   = which(dbh$stat_id == tree)
@@ -562,10 +665,12 @@ ab_mr = ab_m/(20^2*pi) * 10
 # melt measured
 ab_m_melt = melt(ab_mr)
 colnames(ab_m_melt) = c('tree_id', 'year_id', 'ab')
-ab_m_melt$taxon   = taxon[ab_m_melt$tree_id]
-ab_m_melt$taxon   = taxaMatch[match(ab_m_melt$taxon, taxaMatch$taxon), 'species']
-ab_m_melt$site_id = tree_site_id[ab_m_melt$tree_id]
-ab_m_melt$year    = years[ab_m_melt$year_id]
+ab_m_melt$taxon   = data$taxon[ab_m_melt$tree_id]
+#ab_m_melt$taxon   = taxaMatch[match(ab_m_melt$taxon, taxaMatch$taxon), 'species']
+ab_m_melt$taxon   = data$taxaMatch[match(ab_m_melt$taxon, taxaMatch$number), 'species']
+#ab_m_melt$site_id = tree_site_id[ab_m_melt$tree_id]
+ab_m_melt$site_id = data$plot_id[ab_m_melt$tree_id]
+ab_m_melt$year    = data$years[ab_m_melt$year_id]
 
 ## MK ??: Do we need to remove these dates for abi, median, etc?
 ab_m_melt = ab_m_melt[ab_m_melt$year<2013,]
@@ -577,10 +682,12 @@ abi_m = t(apply(ab_mr, 1, function(x) diff(x)))
 # melt measured
 abi_m_melt = melt(abi_m)
 colnames(abi_m_melt) = c('tree_id', 'year_id', 'abi')
-abi_m_melt$taxon   = taxon[abi_m_melt$tree_id]
-abi_m_melt$taxon   = taxaMatch[match(abi_m_melt$taxon, taxaMatch$taxon), 'species']
-abi_m_melt$site_id = tree_site_id[abi_m_melt$tree_id]
-abi_m_melt$year    = years[abi_m_melt$year_id]
+abi_m_melt$taxon   = data$taxon[abi_m_melt$tree_id]
+#abi_m_melt$taxon   = taxaMatch[match(abi_m_melt$taxon, taxaMatch$taxon), 'species']
+abi_m_melt$taxon   = data$taxaMatch[match(abi_m_melt$taxon, data$taxaMatch$number), 'species']
+#abi_m_melt$site_id = tree_site_id[abi_m_melt$tree_id]
+abi_m_melt$site_id = data$plot_id[abi_m_melt$tree_id]
+abi_m_melt$year    = data$years[abi_m_melt$year_id]
 
 abi_m_melt = abi_m_melt[abi_m_melt$year<2013,]
 
@@ -588,64 +695,70 @@ abi_m_melt = abi_m_melt[abi_m_melt$year<2013,]
 ### D. Process dbh and ab from census data ##################################################################
 #############################################################################################################
 
-##### Step 1: Organize census data #####
+if (census){
 
-## MK??: why are 'yr' and 'year' different?
-# get census years
-# census_years = sort(unique(dbh$year))
-cyr = dbh$yr
-cyr[which(cyr %in% c('01', '11'))] = paste0('20', cyr[which(cyr %in% c('01', '11'))])
-cyr[which(cyr %in% c('62', '69', '75', '91'))] = paste0('19', cyr[which(cyr %in%  c('62', '69', '75', '91'))])
-census_years = sort(unique(cyr))
-
-dbh = data.frame(dbh, cyr=cyr)
-N_census_years = length(census_years)
-N_samples = 200
-
-# organize data using dcast 
-dbh_c_cast = dcast(dbh, stat_id+site~cyr, value.var=c('value'))
-
-##### Step 2: Get biomass estimates based on Chojnacky coefficients #####
-
-dbh_c = dbh_c_cast[,3:ncol(dbh_c_cast)]
-
-# get Choj pft indices for getting correct coefficients
-choj_pfts_c = as.vector(sapply(pft_list[taxon], function(x){which(acro_level3a$acronym == x)}))
-
-# ln(biomass-kg) = beta0 + beta1 * ln(diameter-cm)
-b0 = choj$beta0[choj_pfts_c]
-b1 = choj$beta1[choj_pfts_c]
-ab_c = exp(b0 + b1*log(dbh_c))
-
-# in Kg/plot, rescale so it is Mg/ha
-ab_cr = as.matrix(ab_c/(20^2*pi) * 10)
-
-# melt census
-ab_c_melt = melt(ab_cr)
-colnames(ab_c_melt) = c('tree_id', 'year_id', 'ab')
-ab_c_melt$taxon   = taxon[ab_c_melt$tree_id]
-ab_c_melt$taxon   = taxaMatch[match(ab_c_melt$taxon, taxaMatch$taxon), 'species']
-ab_c_melt$site_id = tree_site_id[ab_c_melt$tree_id]
-ab_c_melt$year    = as.numeric(census_years[ab_c_melt$year_id])
-
-# aboveground biomass increment computation
-census_years = as.numeric(census_years)
-abi_c = t(apply(ab_cr, 1, function(x) diff(x)))
-for (i in 1:ncol(abi_c)){
-  abi_c[,i] = abi_c[,i]/diff(census_years)[i]
+  ##### Step 1: Organize census data #####
+  
+  ## MK??: why are 'yr' and 'year' different?
+  # get census years
+  # census_years = sort(unique(dbh$year))
+  cyr = dbh$yr
+  cyr[which(cyr %in% c('01', '11'))] = paste0('20', cyr[which(cyr %in% c('01', '11'))])
+  cyr[which(cyr %in% c('62', '69', '75', '91'))] = paste0('19', cyr[which(cyr %in%  c('62', '69', '75', '91'))])
+  census_years = sort(unique(cyr))
+  
+  dbh = data.frame(dbh, cyr=cyr)
+  N_census_years = length(census_years)
+  N_samples = 200
+  
+  # organize data using dcast 
+  dbh_c_cast = dcast(dbh, stat_id+site~cyr, value.var=c('value'))
+  
+  ##### Step 2: Get biomass estimates based on Chojnacky coefficients #####
+  
+  dbh_c = dbh_c_cast[,3:ncol(dbh_c_cast)]
+  
+  # get Choj pft indices for getting correct coefficients
+  choj_pfts_c = as.vector(sapply(pft_list[taxon], function(x){which(acro_level3a$acronym == x)}))
+  
+  # ln(biomass-kg) = beta0 + beta1 * ln(diameter-cm)
+  b0 = choj$beta0[choj_pfts_c]
+  b1 = choj$beta1[choj_pfts_c]
+  ab_c = exp(b0 + b1*log(dbh_c))
+  
+  # in Kg/plot, rescale so it is Mg/ha
+  ab_cr = as.matrix(ab_c/(20^2*pi) * 10)
+  
+  # melt census
+  ab_c_melt = melt(ab_cr)
+  colnames(ab_c_melt) = c('tree_id', 'year_id', 'ab')
+  ab_c_melt$taxon   = taxon[ab_c_melt$tree_id]
+  #ab_c_melt$taxon   = taxaMatch[match(ab_c_melt$taxon, taxaMatch$taxon), 'species']
+  ab_c_melt$taxon   = taxaMatch[match(ab_c_melt$taxon, taxaMatch$number), 'species']
+  ab_c_melt$site_id = tree_site_id[ab_c_melt$tree_id]
+  ab_c_melt$year    = as.numeric(census_years[ab_c_melt$year_id])
+  
+  # aboveground biomass increment computation
+  census_years = as.numeric(census_years)
+  abi_c = t(apply(ab_cr, 1, function(x) diff(x)))
+  for (i in 1:ncol(abi_c)){
+    abi_c[,i] = abi_c[,i]/diff(census_years)[i]
+  }
+  
+  # melt 
+  abi_c_melt = melt(abi_c)
+  colnames(abi_c_melt) = c('tree_id', 'year', 'abi')
+  abi_c_melt$taxon   = taxon[abi_c_melt$tree_id]
+  abi_c_melt$taxon   = taxaMatch[match(abi_c_melt$taxon, taxaMatch$taxon), 'species']
+  abi_c_melt$site_id = tree_site_id[abi_c_melt$tree_id]
+    
 }
-
-# melt 
-abi_c_melt = melt(abi_c)
-colnames(abi_c_melt) = c('tree_id', 'year', 'abi')
-abi_c_melt$taxon   = taxon[abi_c_melt$tree_id]
-abi_c_melt$taxon   = taxaMatch[match(abi_c_melt$taxon, taxaMatch$taxon), 'species']
-abi_c_melt$site_id = tree_site_id[abi_c_melt$tree_id]
 
 #############################################################################################################
 ### E. Save WIKI RDS and CSV file + clean up working directory ##############################################
 #############################################################################################################
 
+# clean up working directory because the next file is huge
 variables = ls()
 not_rm = variables %in% c('ab_p_melt','abi_p_melt','output_dir','site',
            'ab_m_melt','abi_m_melt','ab_c_melt','abi_c_melt',
@@ -654,6 +767,7 @@ rm = variables[!not_rm]
 
 rm(list=rm)
 
+# MK ??: Do we need to save all of the NA observations in this data frame?
 #preds = rbind(data.frame(ab_p_melt, type="AB"), data.frame(abi_p_melt, type="ABI"))
 
 #write.csv(preds, file=paste0('output/', output_dir, '/NPP_STAT_MODEL_', site, '.csv'), row.names=FALSE)
@@ -740,8 +854,8 @@ ggplot() +
   ylab("Biomass (Mg/ha)") + xlab('Year') +
   scale_x_continuous(breaks=seq(min(years), max(years), by=5))
 
-#ggsave(file=paste0('figures/', figures_dir, '/AGB_by_site_', location, '.pdf'))
-#ggsave(file=paste0('figures/', figures_dir, '/AGB_by_site_', location, '.png'))
+#ggsave(file=paste0('figures/', figures_dir, '/AGB_by_site_', site, '.pdf'))
+#ggsave(file=paste0('figures/', figures_dir, '/AGB_by_site_', site, '.png'))
 
 
 ##### Plot 2: Mean Biomass #####
@@ -767,8 +881,8 @@ ggplot() +
   ylab("Biomass Increment (Mg/ha/year)") + xlab('Year') +
   scale_x_continuous(breaks=seq(min(years), max(years), by=5), limits=c(min(years), max(years)))
 
-#ggsave(file=paste0('figures/', figures_dir, '/AGBI_by_site_', location, '.pdf'))
-#ggsave(file=paste0('figures/', figures_dir, '/AGBI_by_site_', location, '.png'))
+#ggsave(file=paste0('figures/', figures_dir, '/AGBI_by_site_', site, '.pdf'))
+#ggsave(file=paste0('figures/', figures_dir, '/AGBI_by_site_', site, '.png'))
 
 #############################################################################################################
 #############################################################################################################
@@ -785,7 +899,7 @@ ggplot() +
 
 #colnames(dbh_mean_by_iter)[which(colnames(dbh_mean_by_iter)=="plot")] = "site_id"
 #fade_fix = merge(ab_p_sum_by_iter, dbh_mean_by_iter, by=c('year', 'site_id', 'model', 'iter'))
-#saveRDS(fade_fix , file=paste0('allom/fading_record_correct_', location, '_', mvers, '.RDS'))
+#saveRDS(fade_fix , file=paste0('allom/fading_record_correct_', site, '_', mvers, '.RDS'))
 
 #fade_fix_by_tree = merge(ab_p_melt, dbh_melt_all, by=c('year_id', 'tree_id','site_id', 'model', 'iter'))
 #saveRDS(fade_fix_by_tree, file=paste0('data/HF_DBH_AB_tree_iter.RDS'))
