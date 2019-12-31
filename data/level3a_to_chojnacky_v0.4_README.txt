@@ -1,0 +1,71 @@
+FILENAME: 
+
+level3a_to_chojnacky_v0.4.csv
+
+Conversion file that aligns PLS Level3a genera to the Chojnacky 2014 allometry equations. We used this instead of the PEcAn allometries because the PEcAn allometries come from the Jenkins 2004 papers which was updated by Chojnacky in 2014.
+
+Citations:
+Chojnacky, D.C., L.S. Heath, J.C. Jenkins. 2014. Updated generalized biomass equations for North American tree species. Forestry 87: 129-151. PDF can be found here: https://www.fs.fed.us/nrs/pubs/jrnl/2014/nrs_2014_chojnacky_001.pdf
+
+Jenkins, J.C., Chojnacky, D.C., Heath, L.S. and Birdsey, R.A. 2004. A Comprehensive Database of Diameter-Based Biomass Regressions for North American Tree Species. General Technical Report NE-319. US Department of Agriculture, Forest Service, Northeastern Research Station,
+45 pp. [1 CD-ROM].
+
+Charlie Cogbill developed this conversion file and below are his notes about using it. 
+
+Note that he refers to Component 6 which is for stem biomass which we had used as Chris Paciorek says ""stem" - using PEcAn with component 6; i.e., with Mike's hierarchical model that averages over multiple allometries based on the Jenkins 2004 data. This is more or less what folks have been using for the last year or so (i.e. version 0.999 of the PLS biomass product), except now with the nearly final data and cleaning criteria for version 1.0." 
+
+But we ended up using Component 2 for aboveground biomass, which Chris describes as ""agb" - using the equations Charlie collated from Chojnacky 2014 for AGB, namely a single equation for each PLS level 3a taxon."
+
+Charlie says of the conversion file: "Attached is the mapping of PEcAn species code with at least one component 6 onto Level 3a taxa. Note many have few equations and most are off-site geography.  I have indicated the use of generic soft/hard wood equations which exist in the Pecan table to flesh out he numbers (this replaces the artificial hardwoods used in the first iteration of this table) .  Overall, however there is is a tradeoff for appropriate species-specific equations (not even addressing age- or geographic-specific) and getting a larger sample size. The search for more equations has essentially compromised any accuracy. Chojnacky/Jenkins addressed this problem in their 2014 paper (Forestry 87:129-151) by grouping by families (or genus) and fitting a composite equation with standard format ln(biomass-kg) =B0 + B1*ln(diameter-cm).  This is a single equation, but  more relevant to any of our calculations than those based on the Jenkins 2004 table. For possible use either alone or in combination with the Pecan  allometry, I am including the mapping of the 2014 equations onto Level 3a on the attachment. I am happy with any application of component 6 equations since they all represent very general relevance."
+Charlie also notes that: "the most viable allometric option uses columns beta0 and beta1 as coefficients in a ln-ln regression. For comprehensiveness, the only tweak is that in Minnesota the secondary birch equation in columns β0 & β1 should be used.  
+
+********
+HEADER:
+
+level3a - Level3a PLS genera. Level 3a are the PLS taxon names lumped up to a standardized level, i.e. one that minimizes inter-surveyor effects. Usable across PalEON domain.
+
+Chojnack et al. grouping - these are the taxa from Chojnacky 2014
+
+beta0 - the beta0 in the aboveground biomass equation, ln(biomass-kg)=β0 + β1 *ln(diameter-cm)	
+
+beta1 - the beta1 in the aboveground biomass equation, ln(biomass-kg)=β0 + β1 *ln(diameter-cm)
+
+
+
+
+********
+Contact Information
+PI: Jason McLachlan
+Data Manager: Jody Peters
+Contact for data:
+University of Notre Dame
+100 Galvin
+Notre Dame IN, 46556
+Emails: peters.63@nd.edu; jmclachl@nd.edu 
+Phone numbers: 574-631-1852 (Jody); 574-631-1850 (Jason)
+
+
+******
+Information about geographic location of data collection
+These conversions apply to taxa within the PalEON domain but specifically focusing on the Midwest where we can estimate biomass
+
+******
+Date that the file was updated
+*October 8, 2019 - Chris Paciorek updated this file and added it to the PLS Products GitHub repo in preparation for archiving his biomass manuscript.  All the data is the same, but the "pecan_allometry_spcd", "pecan_allometry_common_names", "Charlie's_notes", and "specific_gravity" columns were removed from the table in order to remove extraneous information that was unnessary for the general public.
+* July 29, 2019 - Charlie checked the allometries one more time and made some additional changes for this version 0.3.
+
+******
+* The orginial conversion file Charlie sent "to Chris PeCAN mapper.xls" was updated to v0.1 by Chris and used in his code to estimate aboveground biomass. v0.1 did not include the secondary equations. Jody included those for v0.2.  Charlie made some additional changes to the allometries to make sure they matched what was listed in Chojnacky 2014 for v0.3.
+
+********
+Keywords used to describe the data topic
+PalEON, Public Land Survey (PLS), Midwest, aboveground biomass
+
+
+
+********
+Sharing/Access information
+We are using the CC-BY 4.0 (Creative Commons Attribution 4.0 International) License for data products that get archived on NIS or elsewhere. Details of this license can be found here:
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+

@@ -43,7 +43,7 @@ pdbh_year = dat$pdbh_year
 trees = seq(1, N_trees)
 
 # fnames = c('ring_model_t_pdbh_IT')
-fnames = "ring_model_t_pdbh"
+fnames = "ring_model_t_pdbh_ROOSTER"
 models = c('Model RW')
 
 post= list()
