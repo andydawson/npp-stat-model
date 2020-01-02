@@ -1,7 +1,7 @@
 # THIS SCRIPT ASSUMES NO CENSUS DATA AVAILABLE # 
 
 rm(list=ls())
-setwd('~/Desktop/npp-stat-model')
+# setwd('~/Desktop/npp-stat-model')
 
 library(ggplot2)
 library(reshape2)
@@ -42,8 +42,10 @@ dvers = 'v5.0'
 burn = 1000
 
 # load model output data for site
-data_dir = file.path('data','sites',site)
+# data_dir = file.path('data','sites',site)
+data_dir = file.path('sites',site, 'data')
 dat = readRDS(paste0(data_dir,'/tree_data_ROOSTER_STAN_v0.1.RDS'))
+# dat = readRDS(paste0(data_dir,'/NPP_STAT_MODEL_ROOSTER.RDS'))
 fnames = c('ring_model_t_pdbh_ROOSTER_v0.1.Rdata')
 models = c('Model RW')
 
@@ -55,7 +57,6 @@ rw_year = 2013
 
 ########################################
 
-# create output directory
 output_dir <- file.path('sites',site)
 if (!file.exists(output_dir)){
   dir.create(output_dir)
@@ -64,11 +65,12 @@ if (!file.exists(output_dir)){
 }
 
 # get ring width data 
+output_dir = file.path('sites',site, 'output')
 nmodels = length(fnames)
 post = list()
 for (i in 1:length(fnames)) {
   fname_model = fnames[i]
-  load(file   = paste0(data_dir,'/', fname_model))
+  load(file   = paste0(output_dir,'/', fname_model))
   post[[i]]   = post
 }  
 niter =length(post$lp__)
@@ -284,16 +286,29 @@ ab_melt$plot = plot_id[ab_melt$tree]
 dbh_melt_all = data.frame(dbh_melt, model=rep("Model RW", nrow(dbh_melt)))
 ab_melt_all = data.frame(ab_melt, model=rep("Model RW", nrow(ab_melt)))
 
-# aggregate for some plots later
-dbh_mean = aggregate(dbh~tree+year+plot, dbh_melt, mean, na.rm=TRUE) 
-dbh_sum = aggregate(dbh~year+plot, dbh_mean, sum, na.rm=TRUE)
-ab_mean = aggregate(ab~tree+plot+year+model, ab_melt_all, mean) 
-ab_sum = aggregate(ab~year+model+plot, ab_mean, sum)
+# XXX: don't think we need these lines
+# # aggregate for some plots later
+# dbh_mean = aggregate(dbh~tree+year+plot, dbh_melt, mean, na.rm=TRUE) 
+# dbh_sum = aggregate(dbh~year+plot, dbh_mean, sum, na.rm=TRUE)
+# 
+# ab_mean = aggregate(ab~tree+plot+year+model, ab_melt_all, mean) 
+# ab_sum = aggregate(ab~year+model+plot, ab_mean, sum)
 
 ##### Step 4: Calculate biomass and biomass increment #####
 
+# ab_small: based on trees from 10 to 20 cm DBH from inner most plot of radius 13 m
+pdbh = exp(logPDobs)
+distance = dat$distance
+idx_small  = which(pdbh<20)
+idx_medium = which((pdbh>=20)&(pdbh<30))
+idx_large  = which(pdbh>=30)
+
 # in Kg/plot, rescale so it is Mg/ha
-ab_pr1 = ab_p_1/(20^2*pi) * 10
+# but plot sizes differ depending on tree size due to sampling design
+ab_pr1 = ab_p_1
+ab_pr1[idx_small,,] = ab_p_1[idx_small,,]/(13^2*pi) * 10
+ab_pr1[idx_medium,,] = ab_p_1[idx_medium,,]/(20^2*pi) * 10
+ab_pr1[idx_large,,] = ab_p_1[idx_large,,]/(30^2*pi) * 10
 
 # melt predicted biomass for both models
 ab_p1_melt = melt(ab_pr1)
@@ -411,7 +426,12 @@ dbh_m_melt$year = years[dbh_m_melt$year]
 dbh_m_melt$plot = plot_id[dbh_m_melt$tree]
 
 # in Kg/plot, rescale so it is Mg/ha
-ab_mr = ab_m/(20^2*pi) * 10
+# ab_mr = ab_m/(20^2*pi) * 10
+ab_mr = ab_m
+ab_mr[idx_small,] = ab_m[idx_small,]/(13^2*pi) * 10
+ab_mr[idx_medium,] = ab_m[idx_medium,]/(20^2*pi) * 10
+ab_mr[idx_large,] = ab_m[idx_large,]/(30^2*pi) * 10
+
 
 # melt measured
 ab_m_melt = melt(ab_mr)
@@ -434,13 +454,16 @@ abi_m_melt$plot = plot_id[abi_m_melt$tree_id]
 abi_m_melt$year    = years[abi_m_melt$year_id]
 abi_m_melt = abi_m_melt[abi_m_melt$year<rw_year,]
 
+# note dbh not reweighted for sampling
+dbh_mean = aggregate(dbh~tree+year+plot, dbh_melt, mean, na.rm=TRUE)
+dbh_sum = aggregate(dbh~year+plot, dbh_mean, sum, na.rm=TRUE)
 dbh_m_sum = aggregate(dbh~year+plot, dbh_m_melt, sum)
 
 ggplot() + 
   geom_line(data=dbh_sum, aes(x=year, y=dbh, colour=factor(plot), group=factor(plot))) +
   geom_line(data=dbh_m_sum, aes(x=year, y=dbh, colour=factor(plot), group=factor(plot))) + 
   labs(title ='Sum of DBH Values for DBH and RW Obs', colour = 'Plot ID')
-ggsave(paste0(output_dir, '/figures/sum_dbh_by_plot_', site,'.pdf'))
+ggsave(paste0('sites/', site, '/figures/sum_dbh_by_plot_', site,'.pdf'))
 
 ################ ABCXYZ
 #############################################################################################################
@@ -461,8 +484,8 @@ abi_p_melt = abi_p_melt %>% filter(!is.na(value))
 preds = rbind(data.frame(ab_p_melt, type="AB"), data.frame(abi_p_melt, type="ABI"))
 
 # save file for WIKI
-write.csv(preds, file=paste0(output_dir, '/output/', 'NPP_STAT_MODEL_', site, '.csv'), row.names=FALSE)
-saveRDS(preds, paste0(output_dir, '/output/','NPP_STAT_MODEL_',site,'.RDS'))
+write.csv(preds, file=paste0('sites/', site, '/output/', 'NPP_STAT_MODEL_', site, '.csv'), row.names=FALSE)
+saveRDS(preds, paste0('sites/', site, '/output/','NPP_STAT_MODEL_',site,'.RDS'))
 
 #############################################################################################################
 ### E. Data Visualizations ##################################################################################
@@ -516,7 +539,7 @@ ggplot() +
   theme(axis.title=element_text(size=14), axis.text=element_text(size=14)) +
   ylab("Biomass (Mg/ha)") + 
   xlab('Year')
-ggsave(file=paste0(output_dir,'/figures/AGB_by_plot_',site,'.png'))
+ggsave(file=paste0('sites/', site, '/figures/AGB_by_plot_',site,'.png'))
 
 # free y scales 
 ggplot() +  
@@ -533,7 +556,7 @@ ggplot() +
   ylab("Biomass (Mg/ha)") + xlab('Year') +
   scale_x_continuous(breaks=seq(min(years), max(years), by=5))
 
-ggsave(file=paste0(output_dir,'/figures/AGB_by_plot_',site,'_freey.png'))
+ggsave(file=paste0('sites/', site,'/figures/AGB_by_plot_',site,'_freey.png'))
 
 ##### Plot 2: AGB increment plots for model and empirical #####
 ggplot() +  
@@ -546,5 +569,5 @@ ggplot() +
   theme_bw() +
   ylab("Biomass Increment (Mg/ha/year)") + xlab('Year') +
   scale_x_continuous(breaks=seq(min(years), max(years), by=5), limits=c(min(years), max(years)))
-ggsave(file=paste0(output_dir,'/figures/AGBI_by_plot_',site,'.png'))
+ggsave(file=paste0('sites/', site,'/figures/AGBI_by_plot_',site,'.png'))
 

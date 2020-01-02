@@ -6,17 +6,15 @@ mvers="v0.1"
 site = "ROOSTER"
 
 fname_data = paste0('tree_data_ROOSTER_STAN_', dvers)
-fname_model = "ring_model_t_pdbh_ROOSTER"
+fname_model = "ring_model_t_pdbh"
 
-dat = readRDS(paste0('data/dump/', fname_data, '.RDS'))
-
+dat = readRDS(paste0('sites/', site, '/data/', fname_data, '.RDS'))
 
 load(paste0('output/ring_model_t_pdbh_HMC_NOCOVAR_v3.0.Rdata'))
 
 col_names = sapply(strsplit(colnames(out), '\\['), function(x) x[[1]])
 hist(out[,which(col_names=="sig_d_obs")])
 sig_d_obs = mean(out[,which(col_names=="sig_d_obs")])
-
 
 dat$sig_d_obs = sig_d_obs
 
@@ -37,4 +35,4 @@ post=rstan::extract(fit)
 rm(fit)
 
 
-save(post, file = paste0('output/', fname_model, '_', site, '_', mvers, '.Rdata'))
+save(post, file = paste0('sites/', site, '/output/', fname_model, '_', site, '_', mvers, '.Rdata'))
