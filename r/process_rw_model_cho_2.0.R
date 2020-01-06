@@ -366,35 +366,37 @@ for (i in 1:N_trees) {
   tree_idx = which(trees == tree)
   pft  = as.vector(taxaMatch[which(taxaMatch$taxon == taxon[tree]),'species'])
   
+  dbh_year = pdbh_year[i]
+  dbh_tree = exp(logPDobs[tree])
+  
   # for now use average increments
   incr_tree  = exp(logXobs[which(m2tree == tree)])
   incr_years = years[m2t[which(m2tree == tree)]]
   
   incr_mean = aggregate(incr_tree~incr_years, FUN=median)
   
-  incr_tree = incr_mean[,2]
-  incr_years = incr_mean[,1]
-  
-  pdbh_year = pdbh_year[i]
-  
-  dbh_year = pdbh_year
-  dbh_tree = exp(logPDobs[tree])
-  
-  incr_years = incr_years[-(length(incr_years))]
-  incr_tree = incr_tree[-(length(incr_tree))]
-  
-  tree_years = seq(min(incr_years), max(incr_years+1))
-  
-  incr_cumsum = rev(cumsum(rev(incr_tree[incr_years %in% tree_years])))
-  dbh_calc = c(dbh_tree - 2*incr_cumsum/10, dbh_tree)
-  
-  year_idx = match(tree_years, years)
-  
-  if (length(dbh_calc) > length(year_idx)){
-    dbh_calc = dbh_calc[-1]
+  if (years[dbh_year]==max(incr_mean$incr_years)){
+    incr_tree = incr_mean[,2]
+    incr_years = incr_mean[,1]
+    
+    # incr_years = incr_years[-(length(incr_years))]
+    # incr_tree = incr_tree[-(length(incr_tree))]
+    
+    tree_years = seq(min(incr_years), max(incr_years))
+    
+    incr_cumsum = rev(cumsum(rev(incr_tree[incr_years %in% tree_years])))
+    dbh_calc = c(dbh_tree - 2*incr_cumsum/10, dbh_tree)
+    
+    year_idx = match(tree_years, years)
+    
+    if (length(dbh_calc) > length(year_idx)){
+      dbh_calc = dbh_calc[-1]
+    }
+    
+    dbh_m[tree_idx,year_idx] = dbh_calc
+  } else {
+    print("Wonky ring width measurement after DBH measurement!")
   }
-  
-  dbh_m[tree_idx,year_idx] = dbh_calc
 }
 
 ##### Step 2: Get biomass using Chojnacky coefficients for all trees #####
