@@ -7,14 +7,14 @@ library(plyr)
 
 # source("config_HMC")
 dataDir = '~/Documents/projects/npp-stat-model/data'
-site = 'GOOSE'
+site = 'GILLBROOK'
 dvers = "v0.1"
 mvers = "v0.1"
 
 nPlots <- 3
 ftPerMeter <- 3.2808399
 
-lastYear  <- 2014
+lastYear  <- 2015
 firstYear <- 1940
 years <- firstYear:lastYear
 nT <- length(years)
@@ -23,12 +23,11 @@ rwFiles <- list.files(paste0("data/", site, '/', "rwl"))
 rwFiles <- rwFiles[grep(".rwl$", rwFiles)]
 rwData <- list()
 for(fn in rwFiles) {
-  id <- gsub(".rw", "", fn)
-  rwData[[id]] <- t(read.tucson(file.path("data", site, "rwl", fn)))  # rows are tree, cols are times
+    id <- gsub(".rw", "", fn)
+    rwData[[id]] <- t(read.tucson(file.path("data", site, "rwl", fn)))  # rows are tree, cols are times
 }
 
-treeMeta = read.csv("data/GOOSE/GooseEggAllPlots.csv", skip=3)
-
+treeMeta = read.csv("data/GILLBROOK/GillBrookPlot3.csv", skip=3)
 
 incr = ldply(rwData, rbind)
 incr = incr[,c(".id", sort(colnames(incr)[2:ncol(incr)]))]
@@ -107,14 +106,6 @@ for (n in 1:nrow(pdbh)){
   pdbh$distance[n] = treeMeta$Distance[which((as.numeric(substr(treeMeta$Site, 3, 3))==pdbh$plot[n])&
                                                (treeMeta$Tree.Number == pdbh$id[n]))]
 }
-
-# one tree is missing a DBH measurement
-# stat_id # 42
-na_dbh = pdbh[which(is.na(pdbh$dbh)),]
-na_subset = incr_data[which(incr_data$stat_id == na_dbh$stat_id),]
-na_mean = aggregate(incr~TreeID, na_subset, function(x) sum(x, na.rm=TRUE)*2)
-pdbh[which(is.na(pdbh$dbh)),'dbh'] = max(na_mean$incr)/10 # mm to cm
-
 N_pdbh = nrow(pdbh)
 logPDobs = log(pdbh$dbh)
 pdbh_tree_id = pdbh$stat_id

@@ -33,4 +33,4 @@ post=rstan::extract(fit)
 rm(fit)
 
 
-save(post, file = paste0('output/', site, '/', fname_model, '_', mvers, '.Rdata'))
+save(post, file = paste0('sites/', site, '/output/', fname_model, '_', mvers, '.Rdata'))

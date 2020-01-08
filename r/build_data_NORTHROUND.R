@@ -7,14 +7,14 @@ library(plyr)
 
 # source("config_HMC")
 dataDir = '~/Documents/projects/npp-stat-model/data'
-site = 'GOOSE'
+site = 'NORTHROUND'
 dvers = "v0.1"
 mvers = "v0.1"
 
-nPlots <- 3
+nPlots <- 4
 ftPerMeter <- 3.2808399
 
-lastYear  <- 2014
+lastYear  <- 2015
 firstYear <- 1940
 years <- firstYear:lastYear
 nT <- length(years)
@@ -23,12 +23,11 @@ rwFiles <- list.files(paste0("data/", site, '/', "rwl"))
 rwFiles <- rwFiles[grep(".rwl$", rwFiles)]
 rwData <- list()
 for(fn in rwFiles) {
-  id <- gsub(".rw", "", fn)
-  rwData[[id]] <- t(read.tucson(file.path("data", site, "rwl", fn)))  # rows are tree, cols are times
+    id <- gsub(".rw", "", fn)
+    rwData[[id]] <- t(read.tucson(file.path("data", site, "rwl", fn)))  # rows are tree, cols are times
 }
 
-treeMeta = read.csv("data/GOOSE/GooseEggAllPlots.csv", skip=3)
-
+treeMeta = read.csv("data/NORTHROUND/NorthRoundPondAllPlots.csv", skip=3)
 
 incr = ldply(rwData, rbind)
 incr = incr[,c(".id", sort(colnames(incr)[2:ncol(incr)]))]
@@ -44,19 +43,19 @@ if (!file.exists('data/dump')){
   
 incr_data = melt(incr)
 colnames(incr_data) = c('id', 'year', 'incr')
-incr_data$plot   = as.numeric(substr(incr_data$id, 3, 3))
+incr_data$plot   = as.numeric(substr(incr_data$id, 4, 4))
 incr_data$TreeID = incr_data$id 
-incr_data$id     = as.numeric(substr(incr_data$id, 4, 6))
+incr_data$id     = as.numeric(substr(incr_data$id, 5, 7))
 incr_data$year = as.vector(incr_data$year)
 
-tree_ids = unique(substr(incr_data$TreeID, 1, 6))
+tree_ids = unique(substr(incr_data$TreeID, 1, 7))
 N_trees = length(tree_ids)
 stat_ids = seq(1, N_trees)
 
-incr_data$stat_id = stat_ids[match(substr(incr_data$TreeID, 1, 6), tree_ids)]
+incr_data$stat_id = stat_ids[match(substr(incr_data$TreeID, 1, 7), tree_ids)]
 for (n in 1:nrow(incr_data)){
   print(n)
-  incr_data$taxon[n] = as.vector(treeMeta$Species[which((as.numeric(substr(treeMeta$Site, 3, 3))==incr_data$plot[n])&
+  incr_data$taxon[n] = as.vector(treeMeta$Species[which((as.numeric(substr(treeMeta$Site, 4, 4))==incr_data$plot[n])&
                                                 (treeMeta$Tree.Number == incr_data$id[n]))])
 }
 
@@ -96,24 +95,16 @@ year_idx = data.frame(year_start=as.numeric(aggregate(year~stat_id, data=incr_da
 # year_idx[,2] = rep(N_years, nrow(year_idx))
 # year_idx = year_idx - year_start + 1
 
-
 # make pdbh
 pdbh = aggregate(year~stat_id+plot+id, incr_data, max, na.rm=TRUE)
 pdbh = pdbh[order(pdbh$stat_id),]
 
 for (n in 1:nrow(pdbh)){
-  pdbh$dbh[n] = treeMeta$DBH[which((as.numeric(substr(treeMeta$Site, 3, 3))==pdbh$plot[n])&
+  pdbh$dbh[n] = treeMeta$DBH[which((as.numeric(substr(treeMeta$Site, 4, 4))==pdbh$plot[n])&
                                      (treeMeta$Tree.Number == pdbh$id[n]))]
-  pdbh$distance[n] = treeMeta$Distance[which((as.numeric(substr(treeMeta$Site, 3, 3))==pdbh$plot[n])&
-                                               (treeMeta$Tree.Number == pdbh$id[n]))]
+  pdbh$distance[n] = treeMeta[which((as.numeric(substr(treeMeta$Site, 4, 4))==pdbh$plot[n])&
+                                               (treeMeta$Tree.Number == pdbh$id[n])), 'Distance..base.']
 }
-
-# one tree is missing a DBH measurement
-# stat_id # 42
-na_dbh = pdbh[which(is.na(pdbh$dbh)),]
-na_subset = incr_data[which(incr_data$stat_id == na_dbh$stat_id),]
-na_mean = aggregate(incr~TreeID, na_subset, function(x) sum(x, na.rm=TRUE)*2)
-pdbh[which(is.na(pdbh$dbh)),'dbh'] = max(na_mean$incr)/10 # mm to cm
 
 N_pdbh = nrow(pdbh)
 logPDobs = log(pdbh$dbh)
