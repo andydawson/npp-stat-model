@@ -11,13 +11,7 @@ site = 'SYLVANIA'
 dvers = "v0.1"
 mvers = "v0.1"
 
-nPlots <- 1
-ftPerMeter <- 3.2808399
-
-lastYear  <- 2015
-firstYear <- 1940
-years <- firstYear:lastYear
-nT <- length(years)
+treeMeta = read.csv("data/SYLVANIA/alexander_sylvania_June2018.csv")
 
 rwFiles <- list.files(paste0("data/", site, '/', "rwl"))
 rwFiles <- rwFiles[grep(".rwl$", rwFiles)]
@@ -27,26 +21,24 @@ for(fn in rwFiles) {
     rwData[[id]] <- t(read.tucson(file.path("data", site, "rwl", fn)))  # rows are tree, cols are times
 }
 
-treeMeta = read.csv("data/SYLVANIA/alexander_sylvania_June2018.csv")
-
 incr = ldply(rwData, rbind)
 incr = incr[,c(".id", sort(colnames(incr)[2:ncol(incr)]))]
 rownames(incr) = as.vector(unlist(lapply(rwData, rownames)))
 incr[,1] = rownames(incr)
 
+
+incr = incr[, which((as.numeric(colnames(incr))>1950)|(colnames(incr)==".id"))]
+
 ######################################################################################################################################
-## make nimble data
+## make STAN data
 ######################################################################################################################################
-if (!file.exists('data/dump')){
-  dir.create('data/dump')
-} 
-  
+
 incr_data = melt(incr)
 colnames(incr_data) = c('id', 'year', 'incr')
 incr_data$plot   = rep(1, nrow(incr_data))#as.numeric(substr(incr_data$id, 3, 3))
 incr_data$TreeID = incr_data$id 
 incr_data$id     = as.numeric(substr(incr_data$id, 4, 6))
-incr_data$year = as.vector(incr_data$year)
+incr_data$year   = as.vector(incr_data$year)
 
 tree_ids = unique(substr(incr_data$TreeID, 1, 6))
 N_trees  = length(tree_ids)
@@ -64,13 +56,7 @@ taxaMatch = data.frame(species=sort(unique(incr_data$taxon)), number=seq(1, N_ta
 taxon = aggregate(taxon~stat_id, incr_data, unique)[,2]
 taxon = taxaMatch$number[match(taxon, taxaMatch$species)]
 
-
 plot_id = aggregate(plot~stat_id, incr_data, unique)[,2]
-
-##########################################################################################################################
-## STAN DATA
-##########################################################################################################################
-# incr = incr[,-1]
 
 year_end = max(as.numeric(incr_data$year), na.rm=TRUE)
 year_start = min(as.numeric(incr_data$year), na.rm=TRUE)
@@ -92,11 +78,9 @@ logXobs = log(Xobs)
 
 year_idx = data.frame(year_start=as.numeric(aggregate(year~stat_id, data=incr_data, FUN=min, na.rm=TRUE)[,2]), 
                       year_end=as.numeric(aggregate(year~stat_id, incr_data, max)[,2]))
-# year_idx[,2] = rep(N_years, nrow(year_idx))
-# year_idx = year_idx - year_start + 1
 
 # make pdbh
-pdbh = aggregate(year~stat_id+id, incr_data, max, na.rm=TRUE)
+pdbh = aggregate(year~stat_id+plot+id, incr_data, max, na.rm=TRUE)
 pdbh = pdbh[order(pdbh$stat_id),]
 
 for (n in 1:nrow(pdbh)){
@@ -106,7 +90,6 @@ for (n in 1:nrow(pdbh)){
 N_pdbh = nrow(pdbh)
 logPDobs = log(pdbh$dbh)
 pdbh_tree_id = pdbh$stat_id
-# logPDobs[is.na(logPDobs)] = -999
 pdbh_year_id = pdbh$year
 distance = pdbh$distance
 
@@ -136,8 +119,6 @@ for (i in 1:N_inc) {
   meas2x[i] = which((idx_stack$tree_id == id) & (idx_stack$year == year))
 }
 
-# pdbh$year = rep(N_years, nrow(pdbh))
-
 pdbh2val = vector(length=N_pdbh)
 for (i in 1:N_pdbh){
   id = pdbh$stat_id[i]
@@ -156,8 +137,6 @@ if (!file.exists(site_dir)){
   dir.create(file.path(site_dir,'output'))
   dir.create(file.path(site_dir, 'figures'))
 }
-
-plot_id = rep(1, N_trees)
 
 saveRDS(list(N_trees=N_trees, 
            N_years=N_years,
