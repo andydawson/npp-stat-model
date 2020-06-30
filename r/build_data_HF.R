@@ -254,9 +254,9 @@ dayCols  <- paste0('day', censusYears2digit)
 colnames(census)[colnames(census) == "species.x"] = "species"
 
 # get the dbh values from the RW plots
-cols <- c("census_id", "site", "id", "stat_id", "species", "dbh", "dbh_year")
+cols <- c("census_id", "site", "id", "stat_id", "species", "dbh", "dbh_year", "distance")
 tmp <- census[ , cols]
-pdbh <- melt(tmp, id.vars = c("species","census_id", "site", "stat_id", "id","dbh_year"))
+pdbh <- melt(tmp, id.vars = c("species","census_id", "site", "stat_id", "id","dbh_year", "distance"))
 pdbh <- pdbh[!is.na(pdbh$value),]
 pdbh$yr = substring(pdbh$dbh_year,3,4)
 pdbh$day  = rwSampleDates[match(pdbh$dbh_year, rwSampleDates$year),'date']
@@ -548,18 +548,18 @@ nTaxa <- nrow(taxaMatch)
 n <- nrow(census)
 dead <- census$lastYear < lastYear
 
-last_time <- getTimeIndex(census$lastYear)
+last_time_census <- getTimeIndex(census$lastYear)
 
-last_time = vector(length=n)
+last_time_census = vector(length=n)
 for (i in 1:n){
-  last_time[i] = max(c(dbh$year[which(dbh$stat_id == i)], incrData$year[which(incrData$stat_id == i)]))
-  print(last_time[i])
+  last_time_census[i] = max(c(dbh$year[which(dbh$stat_id == i)], incrData$year[which(incrData$stat_id == i)]))
+  print(last_time_census[i])
 }
 
-last_ti = match(years, last_time)
+last_ti_census = match(years, last_time_census)
 
-save(incrData, incr, treeMeta, ringMeta,
-     file = paste0('/home/adawson/Documents/projects/npp/data/meas/incr_data_', dvers,'.Rda'))
+# save(incrData, incr, treeMeta, ringMeta,
+#      file = paste0('/home/adawson/Documents/projects/npp/data/meas/incr_data_', dvers,'.Rda'))
 
 var_wt = apply(incr, 1, var, na.rm=TRUE)
 pdf('figures/variance_within_tree.pdf')
@@ -644,31 +644,31 @@ N_sites      <- length(unique(tree_site_id))
 census_years = c(1969, 1975, 1991, 2001, 2011)
 
 last_time_data = vector(length=N_trees)
-last_time = vector(length=N_trees)
+last_time_census = vector(length=N_trees)
 last_time_pdbh = vector(length=N_trees)
 for (i in 1:N_trees){
   tree = trees[i]
   print(tree)
-  last_time[i] = max(c(dbh$year[which(dbh$stat_id == tree)], incrData$year[which(incrData$stat_id == tree)]), na.rm=TRUE)
-  last_time_data[i] = last_time[i]
-  if (last_time[i] %in% census_years) {
-    if (which(census_years == last_time[i]) == length(census_years)) {
-      last_time[i] = max(years)
+  last_time_census[i] = max(c(dbh$year[which(dbh$stat_id == tree)], incrData$year[which(incrData$stat_id == tree)]), na.rm=TRUE)
+  last_time_data[i] = last_time_census[i]
+  if (last_time_census[i] %in% census_years) {
+    if (which(census_years == last_time_census[i]) == length(census_years)) {
+      last_time_census[i] = max(years)
     } else if (last_time_data[i] == 1991) {
-      last_time[i] = 2001
+      last_time_census[i] = 2001
     } else {
-      last_time[i] = census_years[which(census_years == last_time[i]) + 1]
+      last_time_census[i] = census_years[which(census_years == last_time_census[i]) + 1]
     }
   } else if (last_time_data[i] == 1992) {
-    last_time[i] = 2001
+    last_time_census[i] = 2001
   }
   
   #print(pdbh[pdbh$stat_id == tree,'dbh_year'])
-  last_time_pdbh[i] = max(pdbh[pdbh$stat_id == tree,'dbh_year'], last_time[i], na.rm=TRUE) 
+  last_time_pdbh[i] = max(pdbh[pdbh$stat_id == tree,'dbh_year'], last_time_census[i], na.rm=TRUE) 
   
-  #print(last_time[i])
+  #print(last_time_census[i])
 }
-last_time = as.numeric(last_time)
+last_time_census = as.numeric(last_time_census)
 last_time_data = as.numeric(last_time_data)
 last_time_pdbh = as.numeric(last_time_pdbh)
 
@@ -677,8 +677,8 @@ X_ord = data.frame(meas=numeric(0), tree_id=numeric(0), year=numeric(0))
 n = 1
 for (i in 1:N_trees){
   print(i)
-  print(last_time[i])
-  #year = seq(year_start, last_time[i])
+  print(last_time_census[i])
+  #year = seq(year_start, last_time_census[i])
   year = seq(year_start, last_time_pdbh[i])
   meas = seq(n, n+length(year)-1)
   n = n + length(year)
@@ -688,7 +688,7 @@ for (i in 1:N_trees){
 
 x2tree  = X_ord$tree_id
 x2year  = match(X_ord$year, years) 
-# last_ti = last_time-year_start +1
+# last_ti = last_time_census-year_start +1
 last_ti = last_time_pdbh-year_start +1
 
 # X_ord = aggregate(orient~year + stat_id, incrData, function(x) length(unique(x)))
@@ -718,6 +718,7 @@ logPDobs = log(pdbh$value)
 pdbh_year_id = pdbh$dbh_year - year_start + 1
 pdbh_tree_id = pdbh$stat_id
 pdbh_day_id  = as.numeric(pdbh$day)
+distance = pdbh$distance
 
 pdbh2d = vector(length=N_pdbh)
 for (i in 1:N_pdbh){
@@ -891,7 +892,7 @@ dump(c('N_inc', 'N_dbh', 'N_pdbh', 'N_X', 'N_D', 'N_trees', 'N_years', 'N_sites'
        'taxon', 'N_taxa', 'open_dbh',
        'N_saplings', 'sap2x', 'not_sap2x','max_size', 'sapling_tree_id', 'sapling_year_id',
        'first_ti', 'cs_last_ti'),
-     file=paste0('data/dump/tree_data_20_', dvers, '.dump'))
+     file=paste0('sites/', site, '/data/tree_data_', site, '_NIMBLE_', dvers, '.dump'))
 
 save(N_inc, N_dbh, N_pdbh, N_X, N_D, N_trees, N_years, N_sites,
      logXobs, m2t, m2ti, m2nc, m2treecode, m2tree, ncores,
@@ -904,14 +905,15 @@ save(N_inc, N_dbh, N_pdbh, N_X, N_D, N_trees, N_years, N_sites,
      meas2x, meas2x_a, x2year, x2tree, 
      meas2d,
      pdbh2d,
-     last_ti, last_time, last_time_data,
+     last_ti, last_time_census, last_time_data,
      ones,
      year_start, year_end,
      trees, years, m2orient,
      taxon, N_taxa, taxaMatch, open_dbh,
      N_saplings, sap2x, not_sap2x, max_size, sapling_tree_id, sapling_year_id,
      first_ti, cs_last_ti, dbh, pdbh,
-     file=paste0('data/dump/tree_data_20_', dvers, '.rdata'))
+     census, distance,
+     file=paste0('sites/', site, '/data/tree_data_', site, '_NIMBLE_', dvers, '.rdata'))
 
 ######################################################################################################################################
 ## make nimble data: no census
@@ -926,7 +928,7 @@ tree_census_id_p <- site_data[trees_p, 'census_id']
 N_sites_p      <- length(unique(tree_site_id_p))
 
 last_ti_p = last_ti[trees_p]
-last_time_p = last_time[trees_p]
+last_time_census_p = last_time_census[trees_p]
 last_time_data_p = last_time_data[trees_p]
 last_time_pdbh_p = last_time_pdbh[trees_p]
 
@@ -935,8 +937,8 @@ X_ord_p = data.frame(meas=numeric(0), tree_id=numeric(0), year=numeric(0))
 n = 1
 for (i in 1:N_trees_p){
   print(i)
-  print(last_time_p[i])
-  #year = seq(year_start, last_time[i])
+  print(last_time_census_p[i])
+  #year = seq(year_start, last_time_census[i])
   year = seq(year_start, last_time_pdbh_p[i])
   meas = seq(n, n+length(year)-1)
   n = n + length(year)
@@ -947,7 +949,7 @@ for (i in 1:N_trees_p){
 x2tree_p  = X_ord_p$tree_id
 x2year_p  = match(X_ord_p$year, years) 
 taxon_p   = taxon[X_ord_p$tree_id]
-# last_ti = last_time-year_start +1
+# last_ti = last_time_census-year_start +1
 
 # X_ord = aggregate(orient~year + stat_id, incrData, function(x) length(unique(x)))
 # X_ord = X_ord[order(X_ord$stat_id, X_ord$year),]
@@ -973,7 +975,8 @@ for (i in 1:N_pdbh){
   pdbh2d_p[i] = which((X_ord_p$tree_id == stat_id) & (X_ord_p$year == year))
 }
 
-
+distance_p = distance[match(trees_p, pdbh_tree_id)]
+pdbh_p = pdbh[match(trees_p, pdbh_tree_id),]
 
 X_p = rep(0.1, N_X_p)
 D_p = rep(0.1, N_X_p)
@@ -988,7 +991,7 @@ first_ti_p   = c(1,cs_last_ti_p[1:(length(cs_last_ti_p)-1)]+1)
 dump(c('X_p', 'logX_p', 'D0', 'beta', 'beta_t', 'beta0', 'sig_x_obs', 'sig_d_obs', 'sig_d', 'sig_d_sap',
        'sig_x', 'beta_sd', 'beta_t_sd', 'beta_spp', 'beta_spp_sd', 'beta_slope', 
        'tau2', 'tau3', 'tau4', 'b0', 'b1', 'nu', 'rho'), 
-     file=paste0('data/dump/tree_data_20_', dvers, '_no_census_inits.dump'))
+     file=paste0('sites/', site, '/data/tree_data_20_', dvers, '_no_census_inits.dump'))
 
 dump(c('N_inc', 'N_pdbh', 'N_X_p', 'N_D_p', 'N_trees_p', 'N_years', 'N_sites',
        'logXobs', 'm2t', 'm2ti', 'm2nc', 'm2tree', 'ncores',
@@ -1003,7 +1006,7 @@ dump(c('N_inc', 'N_pdbh', 'N_X_p', 'N_D_p', 'N_trees_p', 'N_years', 'N_sites',
        'year_start', 'year_end',
        'taxon_p', 'N_taxa', 'open_dbh',
        'first_ti_p', 'cs_last_ti_p'),
-     file=paste0('data/dump/tree_data_20_no_census_', dvers, '.dump'))
+     file=paste0('sites/', site, '/data/tree_data_no_census_', site, '_NIMBLE_', dvers, '.dump'))
 
 save(N_inc, N_pdbh, N_X_p, N_D_p, N_trees_p, N_years, N_sites,
      logXobs, m2t, m2ti, m2nc, m2treecode, m2tree, ncores,
@@ -1013,13 +1016,14 @@ save(N_inc, N_pdbh, N_X_p, N_D_p, N_trees_p, N_years, N_sites,
      i1core2m, i2core2m, i3core2m, i4core2m,
      meas2x_p, x2year_p, x2tree_p, 
      pdbh2d_p,
-     last_ti_p, last_time_p, last_time_data_p,
+     last_ti_p, last_time_census_p, last_time_data_p,
      ones,
      year_start, year_end,
      trees, years, m2orient,
      taxon, N_taxa, taxaMatch, open_dbh,
-     first_ti_p, cs_last_ti_p, dbh, pdbh,
-     file=paste0('data/dump/tree_data_20_no_census_', dvers, '.rdata'))
+     first_ti_p, cs_last_ti_p, dbh, pdbh_p, distance_p,
+     file=paste0('sites/', site, '/data/tree_data_no_census_', site, '_NIMBLE_', dvers, '.rdata'))
+
 
 # ######################################################################################################################################
 # ## make nimble data: single core dataset
@@ -1093,31 +1097,31 @@ save(N_inc, N_pdbh, N_X_p, N_D_p, N_trees_p, N_years, N_sites,
 # census_years = c(1969, 1975, 1991, 2001, 2011)
 # 
 # last_time_data = vector(length=N_trees)
-# last_time = vector(length=N_trees)
+# last_time_census = vector(length=N_trees)
 # last_time_pdbh = vector(length=N_trees)
 # for (i in 1:N_trees){
 #   tree = trees[i]
 #   print(tree)
-#   last_time[i] = max(c(dbh$year[which(dbh$stat_id == tree)], incrData$year[which(incrData$stat_id == tree)]), na.rm=TRUE)
-#   last_time_data[i] = last_time[i]
-#   if (last_time[i] %in% census_years) {
-#     if (which(census_years == last_time[i]) == length(census_years)) {
-#       last_time[i] = max(years)
+#   last_time_census[i] = max(c(dbh$year[which(dbh$stat_id == tree)], incrData$year[which(incrData$stat_id == tree)]), na.rm=TRUE)
+#   last_time_data[i] = last_time_census[i]
+#   if (last_time_census[i] %in% census_years) {
+#     if (which(census_years == last_time_census[i]) == length(census_years)) {
+#       last_time_census[i] = max(years)
 #     } else if (last_time_data[i] == 1991) {
-#       last_time[i] = 2001
+#       last_time_census[i] = 2001
 #     } else {
-#       last_time[i] = census_years[which(census_years == last_time[i]) + 1]
+#       last_time_census[i] = census_years[which(census_years == last_time_census[i]) + 1]
 #     }
 #   } else if (last_time_data[i] == 1992) {
-#     last_time[i] = 2001
+#     last_time_census[i] = 2001
 #   }
 #   
 #   #print(pdbh[pdbh$stat_id == tree,'dbh_year'])
-#   last_time_pdbh[i] = max(pdbh[pdbh$stat_id == tree,'dbh_year'], last_time[i], na.rm=TRUE) 
+#   last_time_pdbh[i] = max(pdbh[pdbh$stat_id == tree,'dbh_year'], last_time_census[i], na.rm=TRUE) 
 #   
-#   #print(last_time[i])
+#   #print(last_time_census[i])
 # }
-# last_time = as.numeric(last_time)
+# last_time_census = as.numeric(last_time_census)
 # last_time_data = as.numeric(last_time_data)
 # last_time_pdbh = as.numeric(last_time_pdbh)
 # 
@@ -1126,8 +1130,8 @@ save(N_inc, N_pdbh, N_X_p, N_D_p, N_trees_p, N_years, N_sites,
 # n = 1
 # for (i in 1:N_trees){
 #   print(i)
-#   print(last_time[i])
-#   #year = seq(year_start, last_time[i])
+#   print(last_time_census[i])
+#   #year = seq(year_start, last_time_census[i])
 #   year = seq(year_start, last_time_pdbh[i])
 #   meas = seq(n, n+length(year)-1)
 #   n = n + length(year)
@@ -1137,7 +1141,7 @@ save(N_inc, N_pdbh, N_X_p, N_D_p, N_trees_p, N_years, N_sites,
 # 
 # x2tree  = X_ord$tree_id
 # x2year  = match(X_ord$year, years) 
-# # last_ti = last_time-year_start +1
+# # last_ti = last_time_census-year_start +1
 # last_ti = last_time_pdbh-year_start +1
 # 
 # # X_ord = aggregate(orient~year + stat_id, incrData, function(x) length(unique(x)))
@@ -1353,7 +1357,7 @@ save(N_inc, N_pdbh, N_X_p, N_D_p, N_trees_p, N_years, N_sites,
 #      meas2x, meas2x_a, x2year, x2tree, 
 #      meas2d,
 #      pdbh2d,
-#      last_ti, last_time, last_time_data,
+#      last_ti, last_time_census, last_time_data,
 #      ones,
 #      year_start, year_end,
 #      trees, years, m2orient,
